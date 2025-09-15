@@ -151,6 +151,7 @@ Rebuild the app, and you’ll have a clean, borderless window.
 
 2. Build the release version of your application:
    ```bash
+   cd example/
    flutter build linux --release
    ```
 
@@ -158,10 +159,9 @@ Rebuild the app, and you’ll have a clean, borderless window.
 
 ### Running the Application
 
-You can run the bundled application directly:
+You can run the omarchy demo application directly from the example folder:
 ```bash
-cd build/linux/x64/release/bundle/
-./your_app_name
+./build/linux/x64/release/bundle/flutter_omarchy_demo
 ```
 
 ## Running on other platforms *(Windows, macOS, Android, iOS, Web)*
@@ -179,8 +179,8 @@ Note that these examples are just basic showcases for components, and the logic 
 To run one of the example application from Omarchy:
 
 ```bash
-cd example
-flutter run --app=pomodoro
+cd ./build/linux/x64/release/bundle/
+./flutter_omarchy_demo --app=counter
 ```
 
 ### Counter
