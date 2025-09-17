@@ -26,34 +26,34 @@ class OmarchyPreview extends StatefulWidget {
       'https://github.com/basecamp/omarchy/blob/master/themes/tokyo-night/backgrounds/1-scenery-pink-lakeside-sunset-lake-landscape-scenic-panorama-7680x3215-144.png?raw=true',
     ),
     'everforest': NetworkImage(
-      'https://github.com/basecamp/omarchy/blob/master/themes/tokyo-night/backgrounds/1-scenery-pink-lakeside-sunset-lake-landscape-scenic-panorama-7680x3215-144.png?raw=true',
+      'https://github.com/basecamp/omarchy/blob/master/themes/everforest/backgrounds/1-everforest.jpg?raw=true',
     ),
     'rose-pine': NetworkImage(
-      'https://github.com/basecamp/omarchy/blob/master/themes/tokyo-night/backgrounds/1-scenery-pink-lakeside-sunset-lake-landscape-scenic-panorama-7680x3215-144.png?raw=true',
+      'https://github.com/basecamp/omarchy/blob/master/themes/rose-pine/backgrounds/1-rose-pine.jpg?raw=true',
     ),
     'catppuccin': NetworkImage(
-      'https://github.com/basecamp/omarchy/blob/master/themes/tokyo-night/backgrounds/1-scenery-pink-lakeside-sunset-lake-landscape-scenic-panorama-7680x3215-144.png?raw=true',
+      'https://github.com/basecamp/omarchy/blob/master/themes/catppuccin/backgrounds/1-catppuccin.png?raw=true',
     ),
     'ristretto': NetworkImage(
-      'https://github.com/basecamp/omarchy/blob/master/themes/tokyo-night/backgrounds/1-scenery-pink-lakeside-sunset-lake-landscape-scenic-panorama-7680x3215-144.png?raw=true',
+      'https://github.com/basecamp/omarchy/blob/master/themes/ristretto/backgrounds/1-ristretto.jpg?raw=true',
     ),
     'nord': NetworkImage(
-      'https://github.com/basecamp/omarchy/blob/master/themes/tokyo-night/backgrounds/1-scenery-pink-lakeside-sunset-lake-landscape-scenic-panorama-7680x3215-144.png?raw=true',
+      'https://github.com/basecamp/omarchy/blob/master/themes/nord/backgrounds/1-nord.png?raw=true',
     ),
     'catppuccin-latte': NetworkImage(
-      'https://github.com/basecamp/omarchy/blob/master/themes/tokyo-night/backgrounds/1-scenery-pink-lakeside-sunset-lake-landscape-scenic-panorama-7680x3215-144.png?raw=true',
+      'https://github.com/basecamp/omarchy/blob/master/themes/catppuccin-latte/backgrounds/1-catppuccin-latte.png?raw=true',
     ),
     'kanagawa': NetworkImage(
-      'https://github.com/basecamp/omarchy/blob/master/themes/tokyo-night/backgrounds/1-scenery-pink-lakeside-sunset-lake-landscape-scenic-panorama-7680x3215-144.png?raw=true',
+      'https://github.com/basecamp/omarchy/blob/master/themes/kanagawa/backgrounds/1-kanagawa.jpg?raw=true',
     ),
     'matte-black': NetworkImage(
-      'https://github.com/basecamp/omarchy/blob/master/themes/tokyo-night/backgrounds/1-scenery-pink-lakeside-sunset-lake-landscape-scenic-panorama-7680x3215-144.png?raw=true',
+      'https://github.com/basecamp/omarchy/blob/master/themes/matte-black/backgrounds/0-ship-at-sea.jpg?raw=true',
     ),
     'osaka-jade': NetworkImage(
-      'https://github.com/basecamp/omarchy/blob/master/themes/tokyo-night/backgrounds/1-scenery-pink-lakeside-sunset-lake-landscape-scenic-panorama-7680x3215-144.png?raw=true',
+      'https://github.com/basecamp/omarchy/blob/master/themes/osaka-jade/backgrounds/1-osaka-jade-bg.jpg?raw=true',
     ),
     'gruvbox': NetworkImage(
-      'https://github.com/basecamp/omarchy/blob/master/themes/tokyo-night/backgrounds/1-scenery-pink-lakeside-sunset-lake-landscape-scenic-panorama-7680x3215-144.png?raw=true',
+      'https://github.com/basecamp/omarchy/blob/master/themes/gruvbox/backgrounds/1-grubox.jpg?raw=true',
     ),
   };
 
