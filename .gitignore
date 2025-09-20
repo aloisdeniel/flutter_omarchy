@@ -4,6 +4,7 @@
 .history
 .svn/
 migrate_working_dir/
+mason-lock.json
 
 # IntelliJ related
 *.iml

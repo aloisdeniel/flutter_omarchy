@@ -22,9 +22,12 @@ The create command allows you to create a new Flutter Omarchy application with a
 
 The 'app' application template creates a really simple Omarchy application with only the following features:
 
+* Github Actions: it includes a GitHub Actions workflow to automate the build and test process.
 * Configuration file management: it uses a configuration file to manage the application settings.
 * Database: it uses a SQLite database to store the application data.
 
 ```bash
-fluter_omarchy create app my_app
-```bash
+flutter_omarchy create app --project_name my_app --executable_name my_app --description "A simple Omarchy application." --author "Your Name" 
+```
+
+You can check the [generation example](https://github.com/aloisdeniel/flutter_omarchy/tree/main/examples/app).
