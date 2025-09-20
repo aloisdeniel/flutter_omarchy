@@ -23,12 +23,12 @@ jobs:
       
       - name: Build web
         run: |
-          cd example
+          cd packages/flutter_omarchy/example
           flutter pub get
           flutter build web --release --wasm --no-tree-shake-icons 
       
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: example/build/web
+          folder: packages/flutter_omarchy/example/build/web
           branch: gh-pages
