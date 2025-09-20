@@ -2,6 +2,7 @@ name: flutter_omarchy
 description: "Develop Flutter apps for Omarchy"
 version: 0.1.12
 homepage: https://github.com/aloisdeniel/flutter_omarchy
+topics: [omarchy, flutter, linux]
 
 environment:
   sdk: ^3.8.1
