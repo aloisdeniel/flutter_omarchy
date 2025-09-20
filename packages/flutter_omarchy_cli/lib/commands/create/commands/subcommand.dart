@@ -19,15 +19,19 @@ abstract class CreateSubcommand extends Command<int> {
 
   @override
   FutureOr<int>? run() async {
+    var vars = {
+      for (var entry in bundle.vars.entries) entry.key: argResults?[entry.key],
+    };
     final projectName = argResults?['project_name'];
     final generator = await MasonGenerator.fromBundle(bundle);
-    final target = DirectoryGeneratorTarget(Directory(projectName));
-    await generator.generate(
-      target,
-      vars: {
-        for (var entry in bundle.vars.entries)
-          entry.key: argResults?[entry.key],
-      },
+    final directory = Directory(projectName);
+    final target = DirectoryGeneratorTarget(directory);
+    await generator.hooks.preGen(vars: vars, onVarsChanged: (v) => vars = v);
+    await generator.generate(target, vars: vars);
+    await generator.hooks.postGen(
+      vars: vars,
+      onVarsChanged: (v) => vars = v,
+      workingDirectory: projectName,
     );
     return ExitCode.success.code;
   }
