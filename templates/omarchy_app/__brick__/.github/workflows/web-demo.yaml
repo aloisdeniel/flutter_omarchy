@@ -1,4 +1,4 @@
-name: Deploy Example to GitHub Pages
+name: Deploy Demo to GitHub Pages
 
 permissions:
   contents: write
@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - main
+      - develop
   workflow_dispatch:
 
 jobs:
@@ -23,12 +24,12 @@ jobs:
       
       - name: Build web
         run: |
-          cd example
+          cd packages/{{project_name.snakeCase()}}
           flutter pub get
-          flutter build web --release --wasm --no-tree-shake-icons 
+          flutter build web --release --wasm --no-tree-shake-icons --base-href /{{project_name.snakeCase()}}/ 
       
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: example/build/web
+          folder: packages/{{project_name.snakeCase()}}/build/web
           branch: gh-pages

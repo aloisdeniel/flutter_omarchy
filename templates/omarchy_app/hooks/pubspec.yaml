@@ -1,0 +1,10 @@
+name: omarchy_app_hooks
+
+environment:
+  sdk: ^3.8.0
+
+dependencies:
+  mason: ^0.1.0
+  meta: ^1.12.0
+  path: ^1.9.1
+
