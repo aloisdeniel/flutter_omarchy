@@ -1,0 +1,30 @@
+name: omarchy_app
+description: All the core pieces to build your own apps for Omarchy.
+repository: https://github.com/aloisdeniel/flutter_omarchy/tree/main/templates/omarchy_app
+version: 1.0.0
+
+environment:
+  mason: ^0.1.0
+
+vars:
+  project_name:
+    type: string
+    description: The name of the app (it will also be used for the package name)
+    default: my_app
+    prompt: What is the name of the app?
+  executable_name:
+    type: string
+    description: The name of the executable (a.k.a the name of the root command)
+    default: my_app
+    prompt: What is the name of the executable?
+  description:
+    type: string
+    description: A short description for your app
+    default: My custom app for Omarchy
+    prompt: Please enter a description for the app.
+  author:
+    type: string
+    description: Your name, for credit and licensing.
+    default: Firstname Lastname
+    prompt: Please enter a company or personal name.
+
