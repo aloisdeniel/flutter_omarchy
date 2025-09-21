@@ -1,6 +1,6 @@
 name: flutter_omarchy_cli
 description: A set of tools to create and maintain Omarchy apps.
-version: 0.1.0
+version: 0.1.1
 homepage: https://github.com/aloisdeniel/flutter_omarchy
 topics: [omarchy, flutter, tool]
 

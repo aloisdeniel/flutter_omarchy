@@ -12,17 +12,23 @@ abstract class CreateSubcommand extends Command<int> {
       argParser.addOption(
         entry.key,
         help: entry.value.description,
-        mandatory: true,
+        mandatory: entry.key != 'project_name',
       );
     }
   }
 
   @override
   FutureOr<int>? run() async {
+    final projectName =
+        argResults?['project_name'] ?? argResults?.rest.firstOrNull;
     var vars = {
       for (var entry in bundle.vars.entries) entry.key: argResults?[entry.key],
+      'project_name': projectName,
     };
-    final projectName = argResults?['project_name'];
+    if (projectName == null || projectName.isEmpty) {
+      print('Error: project_name is required.');
+      return ExitCode.usage.code;
+    }
     final generator = await MasonGenerator.fromBundle(bundle);
     final directory = Directory(projectName);
     final target = DirectoryGeneratorTarget(directory);
