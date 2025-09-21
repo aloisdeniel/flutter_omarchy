@@ -1,6 +1,6 @@
 
 import 'package:{{project_name.snakeCase()}}/src/services/database/demo.dart';
-import 'package:{{project_name.snakeCase()}}/src/services/database/sql.dart';
+import 'package:{{project_name.snakeCase()}}/src/services/database/sqlite.dart';
 
 abstract class DatabaseService {
   const DatabaseService();

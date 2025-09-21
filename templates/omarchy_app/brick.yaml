@@ -27,4 +27,13 @@ vars:
     description: Your name, for credit and licensing.
     default: Firstname Lastname
     prompt: Please enter a company or personal name.
-
+  riverpod:
+    type: bool
+    description: Use Riverpod for state management, else uses built-in Flutter notifiers. 
+    default: false
+    prompt: Do you want use Riverpod for the state management?
+  drift:
+    type: bool
+    description: Use Drift for database instead of Sqflite. 
+    default: false
+    prompt: Which database solution do you want to use?
