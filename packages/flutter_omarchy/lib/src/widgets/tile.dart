@@ -4,7 +4,23 @@ import 'package:flutter_omarchy/src/widgets/utils/default_foreground.dart';
 import 'package:flutter_omarchy/src/widgets/utils/pointer_area.dart';
 import 'package:flutter_omarchy/src/widgets/utils/selected.dart';
 
+/// A list item widget that displays a title and optional description.
+///
+/// This tile provides consistent styling for list items with support for
+/// interaction feedback and selection states. It's commonly used in
+/// navigation panels, file explorers, and settings screens.
+///
+/// {@tool snippet}
+/// ```dart
+/// OmarchyTile(
+///   title: Text('Settings'),
+///   description: Text('Configure application preferences'),
+///   onTap: () => Navigator.push(context, SettingsPage()),
+/// )
+/// ```
+/// {@end-tool}
 class OmarchyTile extends StatelessWidget {
+  /// Creates a tile with the specified [title] and optional [description].
   const OmarchyTile({
     super.key,
     required this.title,
@@ -12,8 +28,13 @@ class OmarchyTile extends StatelessWidget {
     this.onTap,
   });
 
+  /// The primary content displayed in the tile.
   final Widget title;
+  
+  /// Optional secondary content displayed below the title.
   final Widget? description;
+  
+  /// The callback executed when the tile is tapped.
   final VoidCallback? onTap;
 
   @override

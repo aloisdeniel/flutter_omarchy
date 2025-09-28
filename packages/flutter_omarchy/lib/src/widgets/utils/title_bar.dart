@@ -4,7 +4,24 @@ import 'package:flutter/widgets.dart';
 
 enum _LayoutId { leading, title, trailing }
 
+/// A title bar layout widget with leading, title, and trailing areas.
+///
+/// This widget provides a three-section layout commonly used in navigation bars,
+/// dialog headers, and application title bars. The title is centered while
+/// leading and trailing widgets are positioned on the sides with intelligent
+/// overflow handling.
+///
+/// {@tool snippet}
+/// ```dart
+/// TitleBar(
+///   leading: IconButton(icon: Icon(Icons.menu), onPressed: () {}),
+///   title: Text('My Application'),
+///   trailing: IconButton(icon: Icon(Icons.settings), onPressed: () {}),
+/// )
+/// ```
+/// {@end-tool}
 class TitleBar extends StatelessWidget {
+  /// Creates a title bar with the specified widgets.
   const TitleBar({
     super.key,
     required this.title,
@@ -12,8 +29,13 @@ class TitleBar extends StatelessWidget {
     this.trailing = const SizedBox.shrink(),
   });
 
+  /// The central title widget.
   final Widget title;
+  
+  /// The widget displayed on the leading side (typically left).
   final Widget leading;
+  
+  /// The widget displayed on the trailing side (typically right).
   final Widget trailing;
 
   @override

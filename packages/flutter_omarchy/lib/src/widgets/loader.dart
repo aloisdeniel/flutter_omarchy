@@ -4,7 +4,23 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_omarchy/src/theme/colors.dart';
 import 'package:flutter_omarchy/src/theme/theme.dart';
 
+/// An animated loading indicator with a distinctive square design.
+///
+/// This loader features a square border with an animated pulsing effect
+/// and a rotating gradient center. It's designed to fit the terminal-inspired
+/// aesthetic of the Omarchy design system.
+///
+/// {@tool snippet}
+/// ```dart
+/// OmarchyLoader(
+///   accent: AnsiColor.blue,
+///   size: 24,
+///   period: Duration(seconds: 1),
+/// )
+/// ```
+/// {@end-tool}
 class OmarchyLoader extends StatefulWidget {
+  /// Creates an animated loading indicator.
   const OmarchyLoader({
     super.key,
     this.color,
@@ -13,9 +29,22 @@ class OmarchyLoader extends StatefulWidget {
     this.accent,
   });
 
+  /// The color of the loader.
+  ///
+  /// If null, uses the [accent] color or defaults to the theme's foreground color.
   final Color? color;
+  
+  /// The size of the loader in logical pixels.
+  ///
+  /// If null, calculates the size based on the current text style.
   final double? size;
+  
+  /// The duration of one complete animation cycle.
   final Duration period;
+  
+  /// The accent color to use for the loader.
+  ///
+  /// This is used only if [color] is null.
   final AnsiColor? accent;
 
   @override

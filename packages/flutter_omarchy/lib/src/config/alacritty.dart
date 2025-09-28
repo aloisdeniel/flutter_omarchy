@@ -2,10 +2,24 @@ import 'dart:io';
 
 import 'package:toml/toml.dart';
 
+/// Configuration loader for Alacritty terminal settings.
+///
+/// This class reads and parses Alacritty's TOML configuration files,
+/// including support for imports and deep merging of configuration values.
 class AlacrittyConfig {
+  /// Creates an Alacritty configuration with the parsed [values].
   const AlacrittyConfig(this.values);
+  
+  /// The parsed configuration values from the TOML file.
   final Map<String, dynamic> values;
 
+  /// Reads and parses an Alacritty configuration file.
+  ///
+  /// If [file] is not provided, uses the default Alacritty configuration location.
+  /// Returns null if the configuration file doesn't exist.
+  ///
+  /// This method supports Alacritty's import system, automatically loading
+  /// and merging imported configuration files.
   static AlacrittyConfig? read([File? file]) {
     file ??= AlacrittyConfig.defaultFile;
     if (!file.existsSync()) return null;
@@ -27,12 +41,14 @@ class AlacrittyConfig {
     return AlacrittyConfig(result);
   }
 
+  /// Returns the default Alacritty configuration file location.
   static File get defaultFile {
     final home = Platform.environment['HOME'];
     return File('$home/.config/alacritty/alacritty.toml');
   }
 }
 
+/// Recursively merges two configuration maps, with [v2] taking precedence.
 Map<String, dynamic> _deepMerge(
   Map<String, dynamic> v1,
   Map<String, dynamic> v2,

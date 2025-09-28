@@ -3,15 +3,41 @@ import 'package:flutter_omarchy/src/theme/theme.dart';
 
 enum _LogoType { icon, text }
 
+/// The Omarchy brand logo widget in text or icon form.
+///
+/// This widget renders the official Omarchy logo using custom path painting.
+/// It can display either the full text logo or just the icon variant,
+/// and automatically adapts to the current theme colors.
+///
+/// {@tool snippet}
+/// ```dart
+/// Column(
+///   children: [
+///     OmarchyLogo(width: 200), // Full text logo
+///     OmarchyLogo.icon(width: 48), // Icon only
+///   ],
+/// )
+/// ```
+/// {@end-tool}
 class OmarchyLogo extends StatelessWidget {
+  /// Creates the full Omarchy text logo.
   const OmarchyLogo({super.key, this.color, this.width})
     : _type = _LogoType.text;
 
+  /// Creates the Omarchy icon logo.
   const OmarchyLogo.icon({super.key, this.color, this.width})
     : _type = _LogoType.icon;
 
   final _LogoType _type;
+  
+  /// The color to use for the logo.
+  ///
+  /// If null, uses the theme's foreground color.
   final Color? color;
+  
+  /// The width of the logo.
+  ///
+  /// If null, the logo will size itself based on its intrinsic dimensions.
   final double? width;
 
   @override

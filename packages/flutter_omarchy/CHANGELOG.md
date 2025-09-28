@@ -1,6 +1,7 @@
 ## 0.1.13
 
 * Added tree.
+* Documentation.
 
 ## 0.1.12
 

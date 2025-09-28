@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// Represents the current interaction state of a pointer-sensitive widget.
+///
+/// This class encapsulates the various states that a widget can be in based
+/// on user interaction: enabled/disabled, focused, pressed, and hovering.
 final class PointerState {
+  /// Creates a pointer state with the specified interaction flags.
   const PointerState({
     required this.isEnabled,
     required this.hasFocus,
@@ -9,23 +14,36 @@ final class PointerState {
     required this.isHovering,
   });
 
+  /// Whether the widget is enabled and can respond to interactions.
   final bool isEnabled;
+  
+  /// Whether the widget currently has keyboard focus.
   final bool hasFocus;
+  
+  /// Whether the widget is currently being pressed.
   final bool isPressed;
+  
+  /// Whether the mouse pointer is hovering over the widget.
   final bool isHovering;
 
+  /// Returns the pointer state from the closest [PointerStateProvider] ancestor,
+  /// or null if no such ancestor exists.
   static PointerState? maybeOf(BuildContext context) {
     return context
         .dependOnInheritedWidgetOfExactType<PointerStateProvider>()
         ?.state;
   }
 
+  /// Returns the pointer state from the closest [PointerStateProvider] ancestor.
+  ///
+  /// Throws if no [PointerStateProvider] is found in the widget tree.
   static PointerState of(BuildContext context) {
     final PointerState? state = maybeOf(context);
     assert(state != null, 'No TapStateProvider found in context');
     return state!;
   }
 
+  /// Creates a copy of this state with the given fields replaced.
   PointerState copyWith({
     bool? isEnabled,
     bool? hasFocus,

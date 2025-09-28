@@ -4,7 +4,12 @@ import 'package:flutter_omarchy/src/theme/theme.dart';
 import 'package:flutter_omarchy/src/widgets/utils/default_foreground.dart';
 import 'package:flutter_omarchy/src/widgets/utils/pointer_area.dart';
 
+/// Defines the styling data for [OmarchyButton] across different interaction states.
+///
+/// This class contains all the visual properties needed to style a button
+/// in different states (normal, focused, pressed, disabled, hovering).
 class OmarchyButtonStyleData {
+  /// Creates button style data with state-specific styling.
   const OmarchyButtonStyleData({
     required this.normal,
     required this.focused,
@@ -15,15 +20,32 @@ class OmarchyButtonStyleData {
     required this.borderWidth,
     this.transitionDuration = const Duration(milliseconds: 120),
   });
+  
+  /// The duration for transitions between states.
   final Duration transitionDuration;
+  
+  /// The padding inside the button.
   final EdgeInsetsGeometry padding;
+  
+  /// The width of the button's border.
   final double borderWidth;
+  
+  /// Styling for the normal (default) state.
   final OmarchyButtonStyleStateData normal;
+  
+  /// Styling for the focused state.
   final OmarchyButtonStyleStateData focused;
+  
+  /// Styling for the pressed state.
   final OmarchyButtonStyleStateData pressed;
+  
+  /// Styling for the disabled state.
   final OmarchyButtonStyleStateData disabled;
+  
+  /// Styling for the hovering state.
   final OmarchyButtonStyleStateData hovering;
 
+  /// Returns the appropriate style state data based on the current [state].
   OmarchyButtonStyleStateData fromPointer(PointerState state) =>
       switch (state) {
         PointerState(isEnabled: false) => disabled,
@@ -62,27 +84,45 @@ class OmarchyButtonStyleData {
   }
 }
 
+/// Defines the colors for a button in a specific interaction state.
+///
+/// This record type contains the three primary colors that define
+/// the appearance of a button: border, foreground (text/icon), and background.
 typedef OmarchyButtonStyleStateData = ({
+  /// The border color for this state.
   Color border,
+  /// The foreground (text/icon) color for this state.
   Color foreground,
+  /// The background color for this state.
   Color background,
 });
 
+/// An [InheritedWidget] that provides [OmarchyButtonStyle] to its descendants.
+///
+/// This widget makes button styling available to all descendant [OmarchyButton]
+/// widgets in the widget tree, allowing for consistent button theming.
 class OmarchyButtonTheme extends InheritedWidget {
+  /// Creates a button theme that provides [data] to its descendants.
   const OmarchyButtonTheme({
     super.key,
     required super.child,
     required this.data,
   });
 
+  /// The button style to be provided to descendants.
   final OmarchyButtonStyle data;
 
+  /// Returns the [OmarchyButtonStyle] from the closest [OmarchyButtonTheme] ancestor,
+  /// or null if no such ancestor exists.
   static OmarchyButtonStyle? maybeOf(BuildContext context) {
     final theme = context
         .dependOnInheritedWidgetOfExactType<OmarchyButtonTheme>();
     return theme?.data;
   }
 
+  /// Returns the [OmarchyButtonStyle] from the closest [OmarchyButtonTheme] ancestor.
+  ///
+  /// Throws a [FlutterError] if no [OmarchyButtonTheme] is found in the widget tree.
   static OmarchyButtonStyle of(BuildContext context) {
     final theme = context
         .dependOnInheritedWidgetOfExactType<OmarchyButtonTheme>();
@@ -98,25 +138,48 @@ class OmarchyButtonTheme extends InheritedWidget {
   }
 }
 
+/// Abstract base class for defining button styles in the Omarchy design system.
+///
+/// This class provides factory constructors for common button styles and defines
+/// the interface for resolving style data based on the current theme context.
 abstract class OmarchyButtonStyle {
+  /// Creates a button style.
   const OmarchyButtonStyle();
+  
+  /// Creates an outline button style with the specified [accent] color.
+  ///
+  /// Outline buttons have a transparent background with a colored border
+  /// and text that matches the accent color.
   const factory OmarchyButtonStyle.outline(
     AnsiColor accent, {
     EdgeInsetsGeometry padding,
     double borderWidth,
   }) = OutlineOmarchyButtonStyle;
 
+  /// Creates a filled button style with the specified [accent] color.
+  ///
+  /// Filled buttons have a colored background with the accent color
+  /// and contrasting text color.
   const factory OmarchyButtonStyle.filled(
     AnsiColor accent, {
     EdgeInsetsGeometry padding,
   }) = FilledOmarchyButtonStyle;
 
+  /// Creates a bar-style button with minimal styling.
+  ///
+  /// Bar buttons have no border and only show background color on interaction.
+  /// Commonly used in navigation bars and toolbars.
   const factory OmarchyButtonStyle.bar([AnsiColor accent]) =
       BarOmarchyButtonStyle;
 
+  /// Creates a custom button style with the provided [data].
+  ///
+  /// This allows for complete customization of button appearance
+  /// beyond the built-in style variants.
   const factory OmarchyButtonStyle.custom(OmarchyButtonStyleData data) =
       CustomOmarchyButtonStyle;
 
+  /// Resolves this button style to concrete styling data based on the [context].
   OmarchyButtonStyleData resolve(BuildContext context);
 }
 
@@ -321,7 +384,23 @@ class BarOmarchyButtonStyle extends OmarchyButtonStyle {
   }
 }
 
+/// A customizable button widget following the Omarchy design system.
+///
+/// This button provides consistent styling with support for different visual
+/// styles (outline, filled, bar) and interaction states (normal, pressed,
+/// focused, hovering, disabled).
+///
+/// {@tool snippet}
+/// ```dart
+/// OmarchyButton(
+///   style: OmarchyButtonStyle.outline(AnsiColor.blue),
+///   onPressed: () => print('Button pressed'),
+///   child: Text('Click me'),
+/// )
+/// ```
+/// {@end-tool}
 class OmarchyButton extends StatelessWidget {
+  /// Creates an Omarchy button with the given [child] and optional styling.
   const OmarchyButton({
     super.key,
     required this.child,
@@ -332,11 +411,27 @@ class OmarchyButton extends StatelessWidget {
     this.borderWidth,
   });
 
+  /// The widget to display inside the button.
   final Widget child;
+  
+  /// The style to apply to this button.
+  ///
+  /// If null, the style will be inherited from [OmarchyButtonTheme] or
+  /// default to an outline style with white accent color.
   final OmarchyButtonStyle? style;
+  
+  /// The padding inside the button.
   final EdgeInsets padding;
+  
+  /// The callback executed when the button is pressed.
+  ///
+  /// If null, the button will be disabled.
   final VoidCallback? onPressed;
+  
+  /// The focus node for keyboard navigation.
   final FocusNode? focusNode;
+  
+  /// Override for the border width defined in the style.
   final double? borderWidth;
 
   @override

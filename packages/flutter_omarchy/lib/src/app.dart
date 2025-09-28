@@ -4,7 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_omarchy/src/omarchy.dart';
 import 'package:flutter_omarchy/src/theme/theme.dart';
 
+/// A top-level application widget that sets up the Omarchy design system.
+///
+/// This widget provides a complete application structure with Omarchy theming,
+/// localization support, and navigation. It's similar to [MaterialApp] but
+/// specifically designed for the Omarchy design system.
+///
+/// {@tool snippet}
+/// ```dart
+/// OmarchyApp(
+///   theme: OmarchyThemeData.fromConfig(config),
+///   home: MyHomePage(),
+/// )
+/// ```
+/// {@end-tool}
 class OmarchyApp extends StatelessWidget {
+  /// Creates an Omarchy application with the specified [home] widget.
   const OmarchyApp({
     super.key,
     required this.home,
@@ -13,11 +28,24 @@ class OmarchyApp extends StatelessWidget {
     this.localizationsDelegates,
   });
 
+  /// Whether to show the debug banner in debug builds.
   final bool debugShowCheckedModeBanner;
+  
+  /// The theme data to use for the application.
+  ///
+  /// If null, the theme will be loaded from configuration files.
   final OmarchyThemeData? theme;
+  
+  /// The widget displayed as the home page of the application.
   final Widget home;
+  
+  /// Delegates for localization support.
   final Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates;
 
+  /// The default page route builder for navigation.
+  ///
+  /// Creates instant page transitions without animations for a more
+  /// desktop-like navigation experience.
   static PageRoute<T> defaultPageRouteBuilder<T>(
     RouteSettings settings,
     WidgetBuilder builder,

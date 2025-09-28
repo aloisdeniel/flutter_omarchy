@@ -1,23 +1,61 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_omarchy/src/theme/theme.dart';
 
+/// A function that builds the child widget with access to a show callback.
 typedef OmarchyPopOverChildWidgetBuilder =
     Widget Function(BuildContext context, VoidCallback show);
+
+/// A function that builds the popup content with access to size and hide callback.
 typedef OmarchyPopOverWidgetBuilder =
     Widget Function(BuildContext context, Size? size, VoidCallback hide);
 
+/// Defines the direction in which a popup should appear relative to its anchor.
 enum OmarchyPopOverDirection {
+  /// Popup appears above the anchor.
   up,
+  /// Popup appears above and to the left of the anchor.
   upLeft,
+  /// Popup appears above and to the right of the anchor.
   upRight,
+  /// Popup appears to the right of the anchor.
   right,
+  /// Popup appears below the anchor.
   down,
+  /// Popup appears below and to the left of the anchor.
   downLeft,
+  /// Popup appears below and to the right of the anchor.
   downRight,
+  /// Popup appears to the left of the anchor.
   left,
 }
 
+/// A widget that displays a popup overlay positioned relative to its child.
+///
+/// This widget provides a flexible popup system for dropdowns, context menus,
+/// tooltips, and other overlay content. The popup is positioned using Flutter's
+/// overlay system and can be configured to appear in various directions.
+///
+/// {@tool snippet}
+/// ```dart
+/// OmarchyPopOver(
+///   popOverDirection: OmarchyPopOverDirection.down,
+///   builder: (context, show) => ElevatedButton(
+///     onPressed: show,
+///     child: Text('Show Menu'),
+///   ),
+///   popOverBuilder: (context, size, hide) => Material(
+///     child: Column(
+///       children: [
+///         ListTile(title: Text('Option 1'), onTap: hide),
+///         ListTile(title: Text('Option 2'), onTap: hide),
+///       ],
+///     ),
+///   ),
+/// )
+/// ```
+/// {@end-tool}
 class OmarchyPopOver extends StatefulWidget {
+  /// Creates a popup overlay widget.
   const OmarchyPopOver({
     super.key,
     required this.builder,
@@ -27,10 +65,19 @@ class OmarchyPopOver extends StatefulWidget {
     this.popOverDirection = OmarchyPopOverDirection.downRight,
   });
 
+  /// Builder for the child widget that triggers the popup.
   final OmarchyPopOverChildWidgetBuilder builder;
+  
+  /// Builder for the popup content.
   final OmarchyPopOverWidgetBuilder popOverBuilder;
+  
+  /// Whether to show the popup even when not linked to the overlay.
   final bool showWhenUnlinked;
+  
+  /// Additional offset to apply to the popup position.
   final Offset offset;
+  
+  /// The direction in which the popup should appear.
   final OmarchyPopOverDirection popOverDirection;
 
   @override

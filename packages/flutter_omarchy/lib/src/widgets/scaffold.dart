@@ -3,12 +3,32 @@ import 'package:flutter_omarchy/src/theme/theme.dart';
 import 'package:flutter_omarchy/src/widgets/utils/panel_size.dart';
 import 'package:flutter_omarchy/src/widgets/widgets.dart';
 
+/// Represents the state of the leading panel in an [OmarchyScaffold].
 typedef OmarchyScaffoldLeadingMenuState = ({
+  /// Whether the leading panel is currently hidden.
   bool isHidden,
+  /// Controller for managing the hidden state of the panel.
   OmarchySidePanelController hiddenController,
 });
 
+/// A scaffold widget that provides a structured layout for desktop applications.
+///
+/// This scaffold includes support for a leading side panel, navigation bar,
+/// status bar, and main content area. The leading panel can automatically
+/// hide under certain width constraints for responsive design.
+///
+/// {@tool snippet}
+/// ```dart
+/// OmarchyScaffold(
+///   leadingPanel: NavigationPanel(),
+///   navigationBar: TopNavigationBar(),
+///   status: StatusBar(),
+///   child: MainContent(),
+/// )
+/// ```
+/// {@end-tool}
 class OmarchyScaffold extends StatefulWidget {
+  /// Creates an Omarchy scaffold with the specified layout components.
   const OmarchyScaffold({
     super.key,
     required this.child,
@@ -21,6 +41,8 @@ class OmarchyScaffold extends StatefulWidget {
     this.hideLeadingMenuUnderWidth = 500.0,
   });
 
+  /// Returns the leading panel state from the closest [OmarchyScaffold] ancestor,
+  /// or null if no such ancestor exists.
   static OmarchyScaffoldLeadingMenuState? leadingPanelMaybeOf(
     BuildContext context,
   ) {
@@ -29,21 +51,37 @@ class OmarchyScaffold extends StatefulWidget {
         ?.state;
   }
 
+  /// Returns the leading panel state from the closest [OmarchyScaffold] ancestor.
+  ///
+  /// Throws if no [OmarchyScaffold] is found in the widget tree.
   static OmarchyScaffoldLeadingMenuState leadingPanelOf(BuildContext context) {
     return leadingPanelMaybeOf(context)!;
   }
 
+  /// The main content widget displayed in the scaffold.
   final Widget child;
+  
+  /// An optional side panel displayed on the left side of the scaffold.
   final Widget? leadingPanel;
+  
+  /// An optional navigation bar displayed at the top of the scaffold.
   final Widget? navigationBar;
+  
+  /// An optional status bar displayed at the bottom of the scaffold.
   final Widget? status;
+  
+  /// The initial size of the leading panel.
   final PanelSize panelInitialSize;
+  
+  /// The minimum size the leading panel can be resized to.
   final PanelSize? minPanelSize;
+  
+  /// The maximum size the leading panel can be resized to.
   final PanelSize? maxPanelSize;
 
-  /// If null, default to a third of the scaffold's width.
+  /// The width threshold below which the leading panel is automatically hidden.
   ///
-  /// If 0, then always show the leading menu.
+  /// If 0, the leading panel is always shown regardless of screen width.
   final double hideLeadingMenuUnderWidth;
 
   @override

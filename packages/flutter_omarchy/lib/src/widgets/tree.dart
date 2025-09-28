@@ -9,28 +9,44 @@ import 'package:flutter_omarchy/src/widgets/utils/fade_in.dart';
 import 'package:flutter_omarchy/src/widgets/utils/grouping.dart';
 import 'package:flutter_omarchy/src/widgets/utils/pointer_area.dart';
 
+/// Controller for managing the expanded/collapsed state of tree nodes.
+///
+/// This controller maintains the set of expanded nodes and provides methods
+/// to programmatically expand, collapse, and toggle tree nodes. It notifies
+/// listeners when the expansion state changes.
 class OmarchyTreeController<T> extends ChangeNotifier {
+  /// Creates a tree controller with an optional set of initially expanded nodes.
   OmarchyTreeController({Set<T>? expandedNodes})
     : _expandedNodes = expandedNodes ?? <T>{};
 
   final Set<T> _expandedNodes;
 
+  /// Expands the specified [node].
+  ///
+  /// If the node is already expanded, this method has no effect.
   void expand(OmarchyTreeNode<T> node) {
     if (_expandedNodes.add(node.id)) {
       notifyListeners();
     }
   }
 
+  /// Collapses the specified [node].
+  ///
+  /// If the node is already collapsed, this method has no effect.
   void collapse(OmarchyTreeNode<T> node) {
     if (_expandedNodes.remove(node.id)) {
       notifyListeners();
     }
   }
 
+  /// Returns whether the specified [node] is currently expanded.
   bool isExpanded(OmarchyTreeNode<T> node) {
     return _expandedNodes.contains(node.id);
   }
 
+  /// Toggles the expansion state of the specified [node].
+  ///
+  /// If the node is expanded, it will be collapsed. If collapsed, it will be expanded.
   void toggle(OmarchyTreeNode<T> node) {
     if (isExpanded(node)) {
       collapse(node);
@@ -39,6 +55,7 @@ class OmarchyTreeController<T> extends ChangeNotifier {
     }
   }
 
+  /// Collapses all currently expanded nodes.
   void collapseAll() {
     if (_expandedNodes.isNotEmpty) {
       _expandedNodes.clear();
