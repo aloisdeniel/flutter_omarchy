@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_omarchy/src/theme/theme.dart';
-import 'package:flutter_omarchy/src/widgets/side_panel.dart';
 import 'package:flutter_omarchy/src/widgets/utils/panel_size.dart';
 import 'package:flutter_omarchy/src/widgets/widgets.dart';
 

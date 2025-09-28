@@ -4,7 +4,7 @@ class FadeIn extends StatefulWidget {
   const FadeIn({
     super.key,
     required this.child,
-    this.duration = const Duration(milliseconds: 300),
+    this.duration = const Duration(milliseconds: 250),
   });
 
   final Widget child;

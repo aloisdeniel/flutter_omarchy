@@ -40,6 +40,7 @@ class OmarchySidePanel extends StatefulWidget {
     this.direction = TextDirection.ltr,
     this.orientation = Axis.horizontal,
     this.minPanelMargin = 64.0,
+    this.barrierColor,
   });
 
   static OmarchySidePanelController controllerOf(BuildContext context) {
@@ -62,6 +63,7 @@ class OmarchySidePanel extends StatefulWidget {
   final PanelSize panelSize;
   final PanelSize? minPanelSize;
   final double minPanelMargin;
+  final Color? barrierColor;
 
   @override
   State<OmarchySidePanel> createState() => _OmarchySplitPanelState();
@@ -121,7 +123,7 @@ class _OmarchySplitPanelState extends State<OmarchySidePanel> {
                 children: [
                   Positioned.fill(
                     child: Container(
-                      color: const Color(0x33000000),
+                      color: widget.barrierColor ?? const Color(0x33000000),
                       child: GestureDetector(
                         onTap: () {
                           _controller.isVisible = false;

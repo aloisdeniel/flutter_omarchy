@@ -24,6 +24,7 @@ export 'icon_data.g.dart';
 export 'tooltip.dart';
 export 'input_container.dart';
 export 'text_input.dart';
+export 'tree.dart';
 export 'select.dart';
 export 'split_panel.dart';
 export 'side_panel.dart';

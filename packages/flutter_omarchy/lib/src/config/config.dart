@@ -20,6 +20,9 @@ class OmarchyConfigData {
     );
   }
 
+  /// Watch for config changes and yield updated config data.
+  ///
+  /// This only works on Linux and is based on receiving the SIGUSR2 signal.
   static Stream<OmarchyConfigData> watch() async* {
     if (kIsWeb || !Platform.isLinux) {
       return;
