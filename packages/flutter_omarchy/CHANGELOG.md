@@ -1,10 +1,16 @@
+## 0.1.15
+
+* Added tile leading widget.
+* Added OmarchyCommandPanel.
+* Added OmarchyToggle.
+
 ## 0.1.14
 
 * Added pop over animated transitions.
 
 ## 0.1.13
 
-* Added tree.
+* Added OmarchyTree.
 * Documentation.
 
 ## 0.1.12

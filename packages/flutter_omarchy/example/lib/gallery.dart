@@ -1,3 +1,4 @@
+import 'package:example/utils/state_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_omarchy/flutter_omarchy.dart';
 
@@ -260,6 +261,37 @@ class _WidgetsPageState extends State<WidgetsPage> {
     super.dispose();
   }
 
+  IconData _getCommandIcon(String command) {
+    switch (command) {
+      case 'New File':
+        return OmarchyIcons.codFile;
+      case 'Open File':
+        return OmarchyIcons.codFolderOpened;
+      case 'Save File':
+        return OmarchyIcons.codSave;
+      case 'Settings':
+        return OmarchyIcons.codSettings;
+      case 'Toggle Theme':
+        return OmarchyIcons.codColorMode;
+      case 'Show Terminal':
+        return OmarchyIcons.codTerminal;
+      case 'Run Task':
+        return OmarchyIcons.codPlay;
+      case 'Search Files':
+        return OmarchyIcons.codSearch;
+      case 'Quick Open':
+        return OmarchyIcons.codGoToFile;
+      case 'Command Palette':
+        return OmarchyIcons.codSymbolEvent;
+      case 'Help':
+        return OmarchyIcons.codQuestion;
+      case 'About':
+        return OmarchyIcons.codInfo;
+      default:
+        return OmarchyIcons.codCircleFilled;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = OmarchyTheme.of(context);
@@ -339,6 +371,30 @@ class _WidgetsPageState extends State<WidgetsPage> {
                           for (final state in CheckboxState.values)
                             for (final accent in AnsiColor.values)
                               OmarchyCheckbox(accent: accent, state: state),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Toggle',
+                    children: [
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          OmarchyToggle(),
+                          for (final state in [false, true])
+                            for (final accent in AnsiColor.values)
+                              StateBuilder(
+                                initialState: state,
+                                builder: (context, value, setter) {
+                                  return OmarchyToggle(
+                                    accent: accent,
+                                    value: value,
+                                    onPressed: () => setter(!value),
+                                  );
+                                },
+                              ),
                         ],
                       ),
                     ],
@@ -427,6 +483,25 @@ class _WidgetsPageState extends State<WidgetsPage> {
                         ),
                         child: OmarchyTile(title: Text('Example')),
                       ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: theme.colors.normal.black),
+                        ),
+                        child: OmarchyTile(
+                          title: Text('Example'),
+                          description: Text('Description'),
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: theme.colors.normal.black),
+                        ),
+                        child: OmarchyTile(
+                          leading: Icon(OmarchyIcons.codFile),
+                          title: Text('Example'),
+                          description: Text('Description'),
+                        ),
+                      ),
                     ],
                   ),
                   Section(
@@ -512,6 +587,53 @@ class _WidgetsPageState extends State<WidgetsPage> {
                         },
                         builder: (context, show) =>
                             OmarchyButton(onPressed: show, child: Text('Open')),
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Command Panel',
+                    children: [
+                      StateBuilder<String?>(
+                        initialState: null,
+                        builder: (context, selected, setter) {
+                          return OmarchyButton(
+                            child: Text(
+                              'Open Command Panel${selected == null ? '' : ' > $selected'}',
+                            ),
+                            onPressed: () {
+                              showOmarchyCommandPanel<String>(
+                                context: context,
+                                items: [
+                                  'New File',
+                                  'Open File',
+                                  'Save File',
+                                  'Settings',
+                                  'Toggle Theme',
+                                  'Show Terminal',
+                                  'Run Task',
+                                  'Search Files',
+                                  'Quick Open',
+                                  'Command Palette',
+                                  'Help',
+                                  'About',
+                                ],
+                                placeholder: 'Search commands...',
+                                resultBuilder:
+                                    (context, command, isSelected, onTap) {
+                                      return OmarchyTile(
+                                        title: Text(command),
+                                        leading: Icon(_getCommandIcon(command)),
+                                        onTap: onTap,
+                                        description: Text(
+                                          'Description for $command',
+                                        ),
+                                      );
+                                    },
+                                onItemSelected: setter,
+                              );
+                            },
+                          );
+                        },
                       ),
                     ],
                   ),
