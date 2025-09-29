@@ -37,27 +37,27 @@ class OmarchySelect<T> extends StatelessWidget {
 
   /// The focus node for keyboard navigation.
   final FocusNode? focusNode;
-  
+
   /// The currently selected value.
   ///
   /// Use [Some(value)] for a selected value or [None()] for no selection.
   final Optional<T> value;
-  
+
   /// The list of available options to choose from.
   final List<T> options;
-  
+
   /// The widget to display when no value is selected.
   final Widget? placeholder;
-  
+
   /// Callback called when a new value is selected.
   final ValueChanged<T>? onChanged;
-  
+
   /// Function that builds the display widget for each option value.
   final OmarchySelectWidgetBuilder<T> builder;
-  
+
   /// The direction in which the dropdown opens.
   final OmarchyPopOverDirection direction;
-  
+
   /// The maximum height of the dropdown popup.
   final double? maxPopOverHeight;
 

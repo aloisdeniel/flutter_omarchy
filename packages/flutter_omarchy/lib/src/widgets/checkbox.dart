@@ -1,13 +1,15 @@
 import 'package:flutter_omarchy/flutter_omarchy.dart';
 
 /// Represents the visual state of a checkbox.
-enum CheckboxState { 
+enum CheckboxState {
   /// The checkbox is checked (shows a checkmark).
-  checked, 
+  checked,
+
   /// The checkbox is unchecked (empty).
-  unchecked, 
+  unchecked,
+
   /// The checkbox represents multiple selections (shows a filled square).
-  multiple 
+  multiple,
 }
 
 /// A customizable checkbox widget following the Omarchy design system.
@@ -40,17 +42,17 @@ class OmarchyCheckbox extends StatelessWidget {
 
   /// The current state of the checkbox.
   final CheckboxState state;
-  
+
   /// The accent color to use for the checkbox when selected.
   ///
   /// If null, uses the theme's default foreground color.
   final AnsiColor? accent;
-  
+
   /// The size of the checkbox.
   ///
   /// If null, calculates the size based on the current text style.
   final double? size;
-  
+
   /// The callback executed when the checkbox is pressed.
   final VoidCallback? onPressed;
 

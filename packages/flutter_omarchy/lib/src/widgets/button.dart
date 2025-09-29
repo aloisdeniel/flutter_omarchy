@@ -20,28 +20,28 @@ class OmarchyButtonStyleData {
     required this.borderWidth,
     this.transitionDuration = const Duration(milliseconds: 120),
   });
-  
+
   /// The duration for transitions between states.
   final Duration transitionDuration;
-  
+
   /// The padding inside the button.
   final EdgeInsetsGeometry padding;
-  
+
   /// The width of the button's border.
   final double borderWidth;
-  
+
   /// Styling for the normal (default) state.
   final OmarchyButtonStyleStateData normal;
-  
+
   /// Styling for the focused state.
   final OmarchyButtonStyleStateData focused;
-  
+
   /// Styling for the pressed state.
   final OmarchyButtonStyleStateData pressed;
-  
+
   /// Styling for the disabled state.
   final OmarchyButtonStyleStateData disabled;
-  
+
   /// Styling for the hovering state.
   final OmarchyButtonStyleStateData hovering;
 
@@ -91,8 +91,10 @@ class OmarchyButtonStyleData {
 typedef OmarchyButtonStyleStateData = ({
   /// The border color for this state.
   Color border,
+
   /// The foreground (text/icon) color for this state.
   Color foreground,
+
   /// The background color for this state.
   Color background,
 });
@@ -145,7 +147,7 @@ class OmarchyButtonTheme extends InheritedWidget {
 abstract class OmarchyButtonStyle {
   /// Creates a button style.
   const OmarchyButtonStyle();
-  
+
   /// Creates an outline button style with the specified [accent] color.
   ///
   /// Outline buttons have a transparent background with a colored border
@@ -413,24 +415,24 @@ class OmarchyButton extends StatelessWidget {
 
   /// The widget to display inside the button.
   final Widget child;
-  
+
   /// The style to apply to this button.
   ///
   /// If null, the style will be inherited from [OmarchyButtonTheme] or
   /// default to an outline style with white accent color.
   final OmarchyButtonStyle? style;
-  
+
   /// The padding inside the button.
   final EdgeInsets padding;
-  
+
   /// The callback executed when the button is pressed.
   ///
   /// If null, the button will be disabled.
   final VoidCallback? onPressed;
-  
+
   /// The focus node for keyboard navigation.
   final FocusNode? focusNode;
-  
+
   /// Override for the border width defined in the style.
   final double? borderWidth;
 

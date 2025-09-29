@@ -44,13 +44,13 @@ class OmarchyResizeDivider extends StatefulWidget {
   /// [Axis.horizontal] creates a vertical divider for horizontal resizing.
   /// [Axis.vertical] creates a horizontal divider for vertical resizing.
   final Axis orientation;
-  
+
   /// The current size of the panel being resized.
   final double size;
-  
+
   /// The minimum allowed size for the panel.
   final double min;
-  
+
   /// The maximum allowed size for the panel.
   final double max;
 
