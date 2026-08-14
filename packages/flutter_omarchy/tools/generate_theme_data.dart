@@ -2,16 +2,18 @@
 
 import 'dart:io';
 
-import 'package:flutter_omarchy/src/config/alacritty.dart';
-import 'package:flutter_omarchy/src/config/walker.dart';
 import 'package:path/path.dart' as path;
 import 'package:recase/recase.dart';
+import 'package:toml/toml.dart';
 
+/// Generates `lib/src/theme/fallback.g.dart` from the stock Omarchy themes
+/// in `./themes`, each of which is a directory containing a `colors.toml`
+/// palette (copied from `/usr/share/omarchy/themes`).
+///
+/// The color mapping mirrors `OmarchyColorThemeData.fromThemeConfig`.
 void main() {
-  /// Read all subdirectories in ./themes
-  final themeDirs = Directory(
-    './themes',
-  ).listSync().whereType<Directory>().toList();
+  final themeDirs = Directory('./themes').listSync().whereType<Directory>().toList()
+    ..sort((a, b) => a.path.compareTo(b.path));
 
   final result = StringBuffer();
   result.writeln('import \'package:flutter/widgets.dart\';');
@@ -19,53 +21,77 @@ void main() {
   result.writeln();
   result.writeln('abstract class OmarchyColorThemes {');
   final allThemes = <String, String>{};
-  for (var i = 0; i < themeDirs.length; i++) {
-    final dir = themeDirs[i];
+  var isFirst = true;
+  for (final dir in themeDirs) {
     final dirName = dir.path.split(Platform.pathSeparator).last;
+    final colorsFile = File(path.join(dir.path, 'colors.toml'));
+    if (!colorsFile.existsSync()) {
+      print('Warning: No colors.toml found in ${dir.path}, skipping...');
+      continue;
+    }
     final themeName = ReCase(dirName).camelCase;
     allThemes[dirName] = themeName;
 
-    final alacritty = AlacrittyConfig.read(
-      File(path.join(dir.path, 'alacritty.toml')),
-    );
-
-    if (alacritty == null) {
-      print('Warning: No alacritty.toml found in ${dir.path}, skipping...');
-      continue;
+    final values = TomlDocument.parse(colorsFile.readAsStringSync()).toMap();
+    int? token(String name) {
+      final value = values[name];
+      if (value is! String) return null;
+      try {
+        final hex = value.replaceFirst('#', '').replaceFirst('0x', '');
+        return 0xFF000000 | int.parse(hex, radix: 16);
+      } catch (_) {
+        return null;
+      }
     }
-    final walker = WalkerConfig.read(File(path.join(dir.path, 'walker.css')));
-    final theme = OmarchyColorThemeData.fromConfig(alacritty, walker);
-    String c(int value) =>
-        'Color(0x${value.toRadixString(16).padLeft(8, '0')})';
 
-    if (i != 0) {
+    final background = token('background') ?? 0xFF000000;
+    final black = token('lighter_background') ?? background;
+    final foreground = token('foreground') ?? 0xFFFFFFFF;
+    final accent = token('accent') ?? token('blue') ?? foreground;
+    final muted = token('muted') ?? foreground;
+    final red = token('red') ?? foreground;
+    final green = token('green') ?? foreground;
+    final yellow = token('yellow') ?? foreground;
+    final blue = token('blue') ?? foreground;
+    final magenta = token('magenta') ?? foreground;
+    final cyan = token('cyan') ?? foreground;
+    final brightness = values['mode'] == 'light' ? 'light' : 'dark';
+    String c(int value) =>
+        'Color(0x${value.toRadixString(16).padLeft(8, '0').toUpperCase()})';
+
+    if (!isFirst) {
       result.writeln();
     }
+    isFirst = false;
 
     result.writeln('''  static const $themeName = OmarchyColorThemeData(
-    background: ${c(theme.background)},
-    foreground: ${c(theme.foreground)},
-    border: ${c(theme.border)},
-    selectedText: ${c(theme.selectedText)},
+    brightness: Brightness.$brightness,
+    background: ${c(background)},
+    foreground: ${c(foreground)},
+    border: ${c(accent)},
+    selectedText: ${c(accent)},
+    accent: ${c(accent)},
+    selection: ${c(token('selection') ?? accent)},
+    muted: ${c(muted)},
     normal: OmarchyAnsiColorThemeData(
-      black: ${c(theme.normal.black)},
-      white: ${c(theme.normal.white)},
-      red: ${c(theme.normal.red)},
-      green: ${c(theme.normal.green)},
-      yellow: ${c(theme.normal.yellow)},
-      blue: ${c(theme.normal.blue)},
-      magenta: ${c(theme.normal.magenta)},
-      cyan: ${c(theme.normal.cyan)},
+      black: ${c(black)},
+      white: ${c(foreground)},
+      red: ${c(red)},
+      green: ${c(green)},
+      yellow: ${c(yellow)},
+      blue: ${c(blue)},
+      magenta: ${c(magenta)},
+      cyan: ${c(cyan)},
     ),
     bright: OmarchyAnsiColorThemeData(
-      black: ${c(theme.bright.black)},
-      white: ${c(theme.bright.white)},
-      red: ${c(theme.bright.red)},
-      green: ${c(theme.bright.green)},
-      yellow: ${c(theme.bright.yellow)},
-      blue: ${c(theme.bright.blue)},
-      magenta: ${c(theme.bright.magenta)},
-      cyan: ${c(theme.bright.cyan)},
+      black: ${c(muted)},
+      white: ${c(token('bright_foreground') ?? foreground)},
+      red: ${c(token('bright_red') ?? red)},
+      green: ${c(token('bright_green') ?? green)},
+      yellow: ${c(token('bright_yellow') ?? yellow)},
+      blue: ${c(token('bright_blue') ?? blue)},
+      magenta: ${c(token('bright_magenta') ?? magenta)},
+      cyan: ${c(token('bright_cyan') ?? cyan)},
     ),
   );''');
   }
@@ -80,89 +106,4 @@ void main() {
 
   final outputFile = File('../lib/src/theme/fallback.g.dart');
   outputFile.writeAsStringSync(result.toString());
-}
-
-class OmarchyColorThemeData {
-  const OmarchyColorThemeData({
-    required this.background,
-    required this.foreground,
-    required this.border,
-    required this.selectedText,
-    required this.normal,
-    required this.bright,
-  });
-
-  factory OmarchyColorThemeData.fromConfig(
-    AlacrittyConfig alacritty,
-    WalkerConfig? walker,
-  ) {
-    final primary = alacritty.values['colors']['primary'];
-    final bright = OmarchyAnsiColorThemeData.fromAlacritty(
-      alacritty.values['colors']['bright'],
-    );
-    return OmarchyColorThemeData(
-      foreground: _color(primary['foreground']),
-      background: _color(primary['background']),
-      border: _color(walker?.colors['border'], bright.blue),
-      selectedText: _color(walker?.colors['selected-text'], bright.blue),
-      normal: OmarchyAnsiColorThemeData.fromAlacritty(
-        alacritty.values['colors']['normal'],
-      ),
-      bright: bright,
-    );
-  }
-
-  final int background;
-  final int foreground;
-  final int border;
-  final int selectedText;
-  final OmarchyAnsiColorThemeData normal;
-  final OmarchyAnsiColorThemeData bright;
-}
-
-enum AnsiColor { black, white, red, green, blue, yellow, magenta, cyan }
-
-class OmarchyAnsiColorThemeData {
-  const OmarchyAnsiColorThemeData({
-    required this.black,
-    required this.white,
-    required this.red,
-    required this.green,
-    required this.yellow,
-    required this.blue,
-    required this.magenta,
-    required this.cyan,
-  });
-
-  factory OmarchyAnsiColorThemeData.fromAlacritty(Map<String, dynamic> config) {
-    return OmarchyAnsiColorThemeData(
-      black: _color(config['black']),
-      white: _color(config['white']),
-      red: _color(config['red']),
-      yellow: _color(config['yellow']),
-      blue: _color(config['blue']),
-      magenta: _color(config['magenta']),
-      cyan: _color(config['cyan']),
-      green: _color(config['green']),
-    );
-  }
-
-  final int black;
-  final int white;
-  final int red;
-  final int green;
-  final int yellow;
-  final int blue;
-  final int magenta;
-  final int cyan;
-}
-
-int _color(String? hex, [int fallback = 0xFF000000]) {
-  if (hex == null) return fallback;
-  try {
-    final value = hex.replaceFirst('#', '').replaceFirst('0x', '');
-    return 0xFF000000 | int.parse(value, radix: 16);
-  } catch (_) {
-    return fallback;
-  }
 }

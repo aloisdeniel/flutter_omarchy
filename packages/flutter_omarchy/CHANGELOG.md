@@ -1,3 +1,12 @@
+## 0.2.0
+
+* Support for the latest Omarchy theming system: colors are now read from the canonical `~/.local/state/omarchy/current/theme/colors.toml` palette.
+* Theme changes are now detected by watching the Omarchy state directory (the SIGUSR2 signal is kept for backwards compatibility with older Omarchy versions).
+* Added `accent`, `selection`, `muted` and `brightness` to `OmarchyColorThemeData`.
+* ANSI black now maps to the theme's `lighter_background` so that secondary surfaces and borders (dividers, tab bars, status bar) stay distinguishable from the background.
+* Regenerated the fallback themes from the current stock Omarchy themes (now including all 22 of them).
+* Removed the obsolete Walker CSS configuration (`WalkerConfig`).
+
 ## 0.1.15
 
 * Added tile leading widget.

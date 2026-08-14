@@ -67,21 +67,21 @@ Flutter Omarchy automatically adapts to the system theme of the Omarchy environm
 
 ![Themes](doc/themes.gif)
 
-Flutter Omarchy extracts its theme from the Alacritty terminal configuration and Walker CSS files, just as the Omarchy system does. Since Omarchy doesn't have a dedicated theme configuration, the package reads:
+Flutter Omarchy extracts its theme from the current Omarchy theme, just as the Omarchy system does. The package reads:
 
-- **Alacritty Configuration**: Located at `~/.config/alacritty/alacritty.toml`, this file provides the terminal colors and styling.
-- **Walker CSS**: Located at `~/.config/omarchy/current/theme/walker.css`, this file contains additional color definitions.
+- **Omarchy Theme Palette**: Located at `~/.local/state/omarchy/current/theme/colors.toml`, this canonical palette defines all the theme colors (background, foreground, accent, selection, ANSI colors, ...).
+- **Alacritty Configuration**: Located at `~/.config/alacritty/alacritty.toml`, this file provides the font settings, and acts as a color fallback on older Omarchy versions.
 
-The package automatically observes these configuration files for changes. When you modify your Alacritty or Walker configurations, the theme updates in real-time across all Flutter Omarchy applications without requiring a restart.
+The package automatically observes the Omarchy state directory for changes. When you run `omarchy theme set <name>`, the theme updates in real-time across all Flutter Omarchy applications without requiring a restart.
 
 You can access the current theme in your application using:
 
 
 ```dart
 final theme = OmarchyTheme.of(context);
-final red = theme.colors.normal.red; // Alacritty normal terminal color (background)
-final brightRed = theme.colors.bright.red; // Alacritty bright terminal color (foreground)
-final border = theme.colors.border; // The walker border color
+final red = theme.colors.normal.red; // Normal terminal color
+final brightRed = theme.colors.bright.red; // Bright terminal color
+final accent = theme.colors.accent; // The theme accent color
 final body = theme.text.normal.copyWith(color: red); // The text style
 ```
 

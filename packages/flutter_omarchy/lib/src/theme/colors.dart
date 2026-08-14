@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_omarchy/src/config/config.dart';
+import 'package:flutter_omarchy/src/config/theme_config.dart';
 import 'package:flutter_omarchy/src/theme/fallback.g.dart';
 
 /// Defines the color scheme for Omarchy components.
@@ -8,6 +9,10 @@ import 'package:flutter_omarchy/src/theme/fallback.g.dart';
 /// including background, foreground, and ANSI colors for terminal-like components.
 class OmarchyColorThemeData {
   /// Creates a color theme with the specified colors.
+  ///
+  /// The [accent], [selection] and [muted] colors were introduced with the
+  /// Omarchy `colors.toml` theme format; when omitted they fall back to
+  /// values derived from the other colors so that legacy themes keep working.
   const OmarchyColorThemeData({
     required this.background,
     required this.foreground,
@@ -15,14 +20,26 @@ class OmarchyColorThemeData {
     required this.selectedText,
     required this.normal,
     required this.bright,
-  });
+    this.brightness = Brightness.dark,
+    Color? accent,
+    Color? selection,
+    Color? muted,
+  }) : accent = accent ?? selectedText,
+       selection = selection ?? border,
+       muted = muted ?? foreground;
 
   /// Creates a color theme from the provided [config].
   ///
-  /// This factory constructor loads color information from Alacritty terminal
-  /// configuration and Walker application launcher settings. If no Alacritty
-  /// configuration is available, it falls back to the Tokyo Night theme.
+  /// On recent Omarchy versions, colors are loaded from the current theme's
+  /// canonical `colors.toml` palette. On older versions it falls back to the
+  /// Alacritty terminal colors, and to the Tokyo Night theme when no
+  /// configuration is available at all.
   factory OmarchyColorThemeData.fromConfig(OmarchyConfigData config) {
+    final theme = config.theme;
+    if (theme != null) {
+      return OmarchyColorThemeData.fromThemeConfig(theme);
+    }
+
     final alacritty = config.alacritty;
     if (alacritty == null) {
       return OmarchyColorThemes.tokyoNight;
@@ -35,8 +52,8 @@ class OmarchyColorThemeData {
     return OmarchyColorThemeData(
       foreground: _color(primary['foreground']),
       background: _color(primary['background']),
-      border: _color(config.walker?.colors['border'], bright.blue),
-      selectedText: _color(config.walker?.colors['selected-text'], bright.blue),
+      border: bright.blue,
+      selectedText: bright.blue,
       normal: OmarchyAnsiColorThemeData.fromAlacritty(
         alacritty.values['colors']['normal'],
       ),
@@ -44,11 +61,72 @@ class OmarchyColorThemeData {
     );
   }
 
+  /// Creates a color theme from an Omarchy `colors.toml` palette.
+  ///
+  /// The mapping mirrors the one Omarchy itself uses when generating
+  /// application configs from the theme templates, with one exception:
+  /// ANSI black maps to `lighter_background` instead of the background,
+  /// since the widgets use it as a secondary surface and border color
+  /// (dividers, tab bars, status bar) that must stay distinguishable from
+  /// the background. Bright black maps to the muted color.
+  factory OmarchyColorThemeData.fromThemeConfig(OmarchyThemeConfig theme) {
+    Color token(String name, Color fallback) =>
+        _color(theme.color(name), fallback);
+
+    final background = token('background', const Color(0xFF1A1B26));
+    final foreground = token('foreground', const Color(0xFFA9B1D6));
+    final accent = token('accent', token('blue', foreground));
+    final muted = token('muted', foreground);
+    final normal = OmarchyAnsiColorThemeData(
+      black: token('lighter_background', background),
+      white: foreground,
+      red: token('red', foreground),
+      green: token('green', foreground),
+      yellow: token('yellow', foreground),
+      blue: token('blue', foreground),
+      magenta: token('magenta', foreground),
+      cyan: token('cyan', foreground),
+    );
+    return OmarchyColorThemeData(
+      brightness: theme.isLight ? Brightness.light : Brightness.dark,
+      background: background,
+      foreground: foreground,
+      border: accent,
+      selectedText: accent,
+      accent: accent,
+      selection: token('selection', accent),
+      muted: muted,
+      normal: normal,
+      bright: OmarchyAnsiColorThemeData(
+        black: muted,
+        white: token('bright_foreground', foreground),
+        red: token('bright_red', normal.red),
+        green: token('bright_green', normal.green),
+        yellow: token('bright_yellow', normal.yellow),
+        blue: token('bright_blue', normal.blue),
+        magenta: token('bright_magenta', normal.magenta),
+        cyan: token('bright_cyan', normal.cyan),
+      ),
+    );
+  }
+
+  /// Whether this is a dark or light theme (`mode` in `colors.toml`).
+  final Brightness brightness;
+
   /// The primary background color used for containers and surfaces.
   final Color background;
 
   /// The primary foreground color used for text and icons.
   final Color foreground;
+
+  /// The theme's accent color, used for active borders and highlights.
+  final Color accent;
+
+  /// The background color used for text selections.
+  final Color selection;
+
+  /// The color used for de-emphasized text and icons.
+  final Color muted;
 
   /// The color used for borders and dividers.
   final Color border;
