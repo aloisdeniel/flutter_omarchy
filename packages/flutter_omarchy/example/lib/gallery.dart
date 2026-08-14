@@ -1,3 +1,4 @@
+import 'package:example/utils/state_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_omarchy/flutter_omarchy.dart';
 
@@ -242,327 +243,550 @@ class Section extends StatelessWidget {
   }
 }
 
-class WidgetsPage extends StatelessWidget {
+class WidgetsPage extends StatefulWidget {
   const WidgetsPage({super.key});
+
+  @override
+  State<WidgetsPage> createState() => _WidgetsPageState();
+}
+
+class _WidgetsPageState extends State<WidgetsPage> {
+  final sidePanelController = OmarchySidePanelController();
+  final treeController = OmarchyTreeController<String>();
+
+  @override
+  void dispose() {
+    treeController.dispose();
+    sidePanelController.dispose();
+    super.dispose();
+  }
+
+  IconData _getCommandIcon(String command) {
+    switch (command) {
+      case 'New File':
+        return OmarchyIcons.codFile;
+      case 'Open File':
+        return OmarchyIcons.codFolderOpened;
+      case 'Save File':
+        return OmarchyIcons.codSave;
+      case 'Settings':
+        return OmarchyIcons.codSettings;
+      case 'Toggle Theme':
+        return OmarchyIcons.codColorMode;
+      case 'Show Terminal':
+        return OmarchyIcons.codTerminal;
+      case 'Run Task':
+        return OmarchyIcons.codPlay;
+      case 'Search Files':
+        return OmarchyIcons.codSearch;
+      case 'Quick Open':
+        return OmarchyIcons.codGoToFile;
+      case 'Command Palette':
+        return OmarchyIcons.codSymbolEvent;
+      case 'Help':
+        return OmarchyIcons.codQuestion;
+      case 'About':
+        return OmarchyIcons.codInfo;
+      default:
+        return OmarchyIcons.codCircleFilled;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = OmarchyTheme.of(context);
-    return CustomScrollView(
-      slivers:
-          [
-                Section(
-                  title: 'Logo',
-                  children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: OmarchyLogo.icon(width: 120),
-                    ),
-                    const SizedBox(height: 14),
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: OmarchyLogo(width: 200),
-                    ),
-                  ],
-                ),
-                Section(
-                  title: 'Icon',
-                  children: [
-                    SizedBox(
-                      height: 24,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
+    return OmarchySidePanel(
+      panel: Center(child: Text('Side Panel')),
+      child: CustomScrollView(
+        slivers:
+            [
+                  Section(
+                    title: 'Logo',
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: OmarchyLogo.icon(width: 60),
+                      ),
+                      const SizedBox(height: 14),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: OmarchyLogo(width: 200),
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Icon',
+                    children: [
+                      SizedBox(
+                        height: 24,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            for (final icon in OmarchyIcons.values)
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: OmarchyTooltip(
+                                  message: icon.$1,
+                                  child: Icon(icon.$2, size: 24),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Button',
+                    children: [
+                      Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
                         children: [
-                          for (final icon in OmarchyIcons.values)
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: OmarchyTooltip(
-                                message: icon.$1,
-                                child: Icon(icon.$2, size: 24),
+                          for (var style = 0; style < 2; style++)
+                            for (var child = 0; child < 2; child++)
+                              for (var color in AnsiColor.values)
+                                OmarchyButton(
+                                  style: switch (style) {
+                                    1 => OmarchyButtonStyle.filled(color),
+                                    _ => OmarchyButtonStyle.outline(color),
+                                  },
+                                  child: switch (child) {
+                                    1 => Text('Click me!'),
+                                    _ => Icon(OmarchyIcons.codSettings),
+                                  },
+                                  onPressed: () {},
+                                ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Checkbox',
+                    children: [
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          OmarchyCheckbox(),
+                          for (final state in CheckboxState.values)
+                            for (final accent in AnsiColor.values)
+                              OmarchyCheckbox(accent: accent, state: state),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Toggle',
+                    children: [
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          OmarchyToggle(),
+                          for (final state in [false, true])
+                            for (final accent in AnsiColor.values)
+                              StateBuilder(
+                                initialState: state,
+                                builder: (context, value, setter) {
+                                  return OmarchyToggle(
+                                    accent: accent,
+                                    value: value,
+                                    onPressed: () => setter(!value),
+                                  );
+                                },
                               ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'ProgressBar',
+                    children: [
+                      Column(
+                        spacing: 14,
+                        children: [
+                          OmarchyProgressBar(progress: 0),
+                          for (final progress in [0.2, 0.6, 1.0]) ...[
+                            OmarchyProgressBar(progress: progress),
+                            OmarchyProgressBar(
+                              accent: AnsiColor.green,
+                              progress: progress,
                             ),
+                          ],
                         ],
                       ),
-                    ),
-                  ],
-                ),
-                Section(
-                  title: 'Button',
-                  children: [
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: [
-                        for (var style = 0; style < 2; style++)
-                          for (var child = 0; child < 2; child++)
-                            for (var color in AnsiColor.values)
-                              OmarchyButton(
-                                style: switch (style) {
-                                  1 => OmarchyButtonStyle.filled(color),
-                                  _ => OmarchyButtonStyle.outline(color),
-                                },
-                                child: switch (child) {
-                                  1 => Text('Click me!'),
-                                  _ => Icon(OmarchyIcons.codSettings),
-                                },
-                                onPressed: () {},
-                              ),
-                      ],
-                    ),
-                  ],
-                ),
-                Section(
-                  title: 'Checkbox',
-                  children: [
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        OmarchyCheckbox(),
-                        for (final state in CheckboxState.values)
-                          for (final accent in AnsiColor.values)
-                            OmarchyCheckbox(accent: accent, state: state),
-                      ],
-                    ),
-                  ],
-                ),
-                Section(
-                  title: 'ProgressBar',
-                  children: [
-                    Column(
-                      spacing: 14,
-                      children: [
-                        OmarchyProgressBar(progress: 0),
-                        for (final progress in [0.2, 0.6, 1.0]) ...[
-                          OmarchyProgressBar(progress: progress),
-                          OmarchyProgressBar(
-                            accent: AnsiColor.green,
-                            progress: progress,
-                          ),
-                        ],
-                      ],
-                    ),
-                  ],
-                ),
-                Section(
-                  title: 'TextInput',
-                  children: [
-                    OmarchyTextInput(placeholder: Text('Enter text here')),
-                    OmarchyTextInput(
-                      maxLines: null,
-                      placeholder: Text('Enter multiline text here'),
-                    ),
-                  ],
-                ),
-                Section(
-                  title: 'InputContainer',
-                  children: [
-                    OmarchyInputContainer(
-                      builder: (context, node) => OmarchyTextInput(
-                        focusNode: node,
-                        placeholder: Text('Enter text here'),
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    OmarchyInputContainer(
-                      builder: (context, node) => OmarchyTextInput(
-                        focusNode: node,
+                    ],
+                  ),
+                  Section(
+                    title: 'TextInput',
+                    children: [
+                      OmarchyTextInput(placeholder: Text('Enter text here')),
+                      OmarchyTextInput(
                         maxLines: null,
                         placeholder: Text('Enter multiline text here'),
                       ),
-                    ),
-                  ],
-                ),
-                Section(
-                  title: 'Loader',
-                  children: [
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        OmarchyLoader(),
-                        for (final accent in AnsiColor.values)
-                          OmarchyLoader(accent: accent),
-                      ],
-                    ),
-                  ],
-                ),
-                Section(
-                  title: 'NavigationBar',
-                  children: [
-                    OmarchyNavigationBar(
-                      title: Text('Example'),
-                      trailing: [
-                        OmarchyButton(
-                          child: Icon(OmarchyIcons.codAdd),
-                          onPressed: () {},
+                    ],
+                  ),
+                  Section(
+                    title: 'InputContainer',
+                    children: [
+                      OmarchyInputContainer(
+                        builder: (context, node) => OmarchyTextInput(
+                          focusNode: node,
+                          placeholder: Text('Enter text here'),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-                Section(
-                  title: 'Tile',
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: theme.colors.normal.black),
                       ),
-                      child: OmarchyTile(title: Text('Example')),
-                    ),
-                  ],
-                ),
-                Section(
-                  title: 'Scaffold',
-                  children: [
-                    Container(
-                      width: 400,
-                      height: 320,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: theme.colors.normal.black),
-                      ),
-                      child: OmarchyScaffold(
-                        leadingPanel: Center(child: Text('Leading Menu')),
-                        status: OmarchyStatusBar(
-                          leading: [OmarchyStatus(child: Text('Status'))],
+                      const SizedBox(height: 14),
+                      OmarchyInputContainer(
+                        builder: (context, node) => OmarchyTextInput(
+                          focusNode: node,
+                          maxLines: null,
+                          placeholder: Text('Enter multiline text here'),
                         ),
-                        child: Center(child: Text('Content')),
                       ),
-                    ),
-                  ],
-                ),
-                Section(
-                  title: 'SplitPanel',
-                  children: [
-                    Container(
-                      width: 400,
-                      height: 320,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: theme.colors.normal.black),
+                    ],
+                  ),
+                  Section(
+                    title: 'Loader',
+                    children: [
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          OmarchyLoader(),
+                          for (final accent in AnsiColor.values)
+                            OmarchyLoader(accent: accent),
+                        ],
                       ),
-                      child: OmarchySplitPanel(
-                        panel: Center(child: Text('Points panel (200)')),
-                        child: Center(child: Text('Child')),
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    Container(
-                      width: 400,
-                      height: 320,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: theme.colors.normal.black),
-                      ),
-                      child: OmarchySplitPanel(
-                        panelInitialSize: PanelSize.ratio(0.5),
-                        panel: Center(child: Text('Ratio panel (0.5)')),
-                        child: Center(child: Text('Child')),
-                      ),
-                    ),
-                  ],
-                ),
-                Section(
-                  title: 'Select',
-                  children: [
-                    OmarchySelect<String>(
-                      value: Some('Option 2'),
-                      options: [for (var i = 0; i < 20; i++) 'Option $i'],
-                      onChanged: (v) {},
-                      builder: (context, v) => Text(v),
-                    ),
-                  ],
-                ),
-                Section(
-                  title: 'PopOver',
-                  children: [
-                    OmarchyPopOver(
-                      popOverBuilder: (context, size, hide) {
-                        return OmarchyPopOverContainer(
-                          child: SizedBox(
-                            width: size?.width ?? 200.0,
-                            height: 200,
-                            child: Center(child: Text('Hello')),
+                    ],
+                  ),
+                  Section(
+                    title: 'NavigationBar',
+                    children: [
+                      OmarchyNavigationBar(
+                        title: Text('Example'),
+                        trailing: [
+                          OmarchyButton(
+                            child: Icon(OmarchyIcons.codAdd),
+                            onPressed: () {},
                           ),
-                        );
-                      },
-                      builder: (context, show) =>
-                          OmarchyButton(onPressed: show, child: Text('Open')),
-                    ),
-                  ],
-                ),
-                Section(
-                  title: 'Tabs',
-                  children: [
-                    OmarchyTabs(
-                      children: [
-                        OmarchyTab.closable(
-                          title: Text('first.dart'),
-                          onTap: () {},
-                          onClose: () {},
+                        ],
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Tile',
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: theme.colors.normal.black),
                         ),
-                        OmarchyTab.closable(
-                          icon: Icon(Icons.file_copy),
-                          title: Text('example.dart'),
-                          onTap: () {},
-                          onClose: () {},
-                          isActive: true,
+                        child: OmarchyTile(title: Text('Example')),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: theme.colors.normal.black),
                         ),
-                        for (var i = 0; i < 25; i++)
+                        child: OmarchyTile(
+                          title: Text('Example'),
+                          description: Text('Description'),
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: theme.colors.normal.black),
+                        ),
+                        child: OmarchyTile(
+                          leading: Icon(OmarchyIcons.codFile),
+                          title: Text('Example'),
+                          description: Text('Description'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Scaffold',
+                    children: [
+                      Container(
+                        width: 400,
+                        height: 320,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: theme.colors.normal.black),
+                        ),
+                        child: OmarchyScaffold(
+                          leadingPanel: Center(child: Text('Leading Menu')),
+                          status: OmarchyStatusBar(
+                            leading: [OmarchyStatus(child: Text('Status'))],
+                          ),
+                          child: Center(child: Text('Content')),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'SplitPanel',
+                    children: [
+                      Container(
+                        width: 400,
+                        height: 320,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: theme.colors.normal.black),
+                        ),
+                        child: OmarchySplitPanel(
+                          panel: Center(child: Text('Points panel (200)')),
+                          child: Center(child: Text('Child')),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Container(
+                        width: 400,
+                        height: 320,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: theme.colors.normal.black),
+                        ),
+                        child: OmarchySplitPanel(
+                          panelInitialSize: PanelSize.ratio(0.5),
+                          panel: Center(child: Text('Ratio panel (0.5)')),
+                          child: Center(child: Text('Child')),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'SidePanel',
+                    children: [
+                      OmarchyButton(
+                        child: Text('Show'),
+                        onPressed: () => sidePanelController.isVisible = true,
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Select',
+                    children: [
+                      OmarchySelect<String>(
+                        value: Some('Option 2'),
+                        options: [for (var i = 0; i < 20; i++) 'Option $i'],
+                        onChanged: (v) {},
+                        builder: (context, v) => Text(v),
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'PopOver',
+                    children: [
+                      OmarchyPopOver(
+                        popOverBuilder: (context, size, hide) {
+                          return OmarchyPopOverContainer(
+                            child: SizedBox(
+                              width: size?.width ?? 200.0,
+                              height: 200,
+                              child: Center(child: Text('Hello')),
+                            ),
+                          );
+                        },
+                        builder: (context, show) =>
+                            OmarchyButton(onPressed: show, child: Text('Open')),
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Command Panel',
+                    children: [
+                      StateBuilder<String?>(
+                        initialState: null,
+                        builder: (context, selected, setter) {
+                          return OmarchyButton(
+                            child: Text(
+                              'Open Command Panel${selected == null ? '' : ' > $selected'}',
+                            ),
+                            onPressed: () {
+                              showOmarchyCommandPanel<String>(
+                                context: context,
+                                items: [
+                                  'New File',
+                                  'Open File',
+                                  'Save File',
+                                  'Settings',
+                                  'Toggle Theme',
+                                  'Show Terminal',
+                                  'Run Task',
+                                  'Search Files',
+                                  'Quick Open',
+                                  'Command Palette',
+                                  'Help',
+                                  'About',
+                                ],
+                                placeholder: 'Search commands...',
+                                resultBuilder:
+                                    (context, command, isSelected, onTap) {
+                                      return OmarchyTile(
+                                        title: Text(command),
+                                        leading: Icon(_getCommandIcon(command)),
+                                        onTap: onTap,
+                                        description: Text(
+                                          'Description for $command',
+                                        ),
+                                      );
+                                    },
+                                onItemSelected: setter,
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Tabs',
+                    children: [
+                      OmarchyTabs(
+                        children: [
                           OmarchyTab.closable(
-                            title: Text('example_$i.dart'),
+                            title: Text('first.dart'),
                             onTap: () {},
                             onClose: () {},
                           ),
-                      ],
-                    ),
-                  ],
-                ),
-                Section(
-                  title: 'Tooltip',
-                  children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: OmarchyTooltip(
-                        richMessage: TextSpan(
-                          children: [
-                            TextSpan(text: 'A message for '),
-                            TextSpan(
-                              text: 'you',
-                              style: theme.text.italic.copyWith(
-                                color: theme.colors.bright.red,
+                          OmarchyTab.closable(
+                            icon: Icon(Icons.file_copy),
+                            title: Text('example.dart'),
+                            onTap: () {},
+                            onClose: () {},
+                            isActive: true,
+                          ),
+                          for (var i = 0; i < 25; i++)
+                            OmarchyTab.closable(
+                              title: Text('example_$i.dart'),
+                              onTap: () {},
+                              onClose: () {},
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Tooltip',
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: OmarchyTooltip(
+                          richMessage: TextSpan(
+                            children: [
+                              TextSpan(text: 'A message for '),
+                              TextSpan(
+                                text: 'you',
+                                style: theme.text.italic.copyWith(
+                                  color: theme.colors.bright.red,
+                                ),
                               ),
+                            ],
+                          ),
+                          child: Text('Hover me!'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'TreeView',
+                    children: [
+                      SizedBox(
+                        height: 300,
+                        child: OmarchyTree(
+                          controller: treeController,
+                          children: [
+                            OmarchyTreeNode(
+                              id: 'parent1',
+                              title: Text('Parent 1'),
+                              icon: Icon(OmarchyIcons.codFolder),
+                              children: [
+                                OmarchyTreeNode(
+                                  id: 'child1',
+                                  icon: Icon(OmarchyIcons.codFile),
+                                  title: Text('Child 1'),
+                                ),
+                                OmarchyTreeNode(
+                                  id: 'child2',
+                                  icon: Icon(OmarchyIcons.codFileCode),
+                                  title: Text('Child 2'),
+                                ),
+                                OmarchyTreeNode(
+                                  id: 'folder3',
+                                  title: Text('Folder 3'),
+                                  icon: Icon(OmarchyIcons.codFolder),
+                                  children: [
+                                    OmarchyTreeNode(
+                                      id: 'subchild1',
+                                      icon: Icon(OmarchyIcons.codFileBinary),
+                                      title: Text('Subchild 1'),
+                                    ),
+                                    OmarchyTreeNode(
+                                      id: 'subchild2',
+                                      icon: Icon(OmarchyIcons.codFilePdf),
+                                      title: Text('Subchild 2'),
+                                      onTap: () {
+                                        print('Tapped subchild 2');
+                                      },
+                                    ),
+                                    OmarchyTreeNode(
+                                      id: 'subchild3',
+                                      icon: Icon(OmarchyIcons.codFileMedia),
+                                      title: Text('Subchild 3'),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            OmarchyTreeNode(
+                              id: 'parent2',
+                              title: Text('Parent 2'),
+                              icon: Icon(OmarchyIcons.codFolder),
+                            ),
+                            OmarchyTreeNode(
+                              id: 'parent3',
+                              title: Text('Parent 3'),
+                              icon: Icon(OmarchyIcons.codFolder),
+                              children: [
+                                OmarchyTreeNode(
+                                  id: 'child1',
+                                  title: Text('Child 1'),
+                                ),
+                                OmarchyTreeNode(
+                                  id: 'child2',
+                                  title: Text('Child 2'),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        child: Text('Hover me!'),
                       ),
-                    ),
+                    ],
+                  ),
+                  Section(
+                    title: 'StatusBar',
+                    children: [
+                      OmarchyStatusBar(
+                        leading: [
+                          for (var accent in AnsiColor.values)
+                            OmarchyStatus(
+                              accent: accent,
+                              onTap: () {},
+                              child: Text(accent.name.toUpperCase()),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ]
+                .asMap()
+                .entries
+                .expand(
+                  (x) => [
+                    if (x.key > 0) SliverToBoxAdapter(child: OmarchyDivider()),
+                    x.value,
                   ],
-                ),
-                Section(
-                  title: 'StatusBar',
-                  children: [
-                    OmarchyStatusBar(
-                      leading: [
-                        for (var accent in AnsiColor.values)
-                          OmarchyStatus(
-                            accent: accent,
-                            onTap: () {},
-                            child: Text(accent.name.toUpperCase()),
-                          ),
-                      ],
-                    ),
-                  ],
-                ),
-              ]
-              .asMap()
-              .entries
-              .expand(
-                (x) => [
-                  if (x.key > 0) SliverToBoxAdapter(child: OmarchyDivider()),
-                  x.value,
-                ],
-              )
-              .toList(),
+                )
+                .toList(),
+      ),
     );
   }
 }

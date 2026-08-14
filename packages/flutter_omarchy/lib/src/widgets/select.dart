@@ -1,9 +1,28 @@
 import 'package:flutter_omarchy/flutter_omarchy.dart';
 
+/// A function that builds a widget representation of a select option value.
 typedef OmarchySelectWidgetBuilder<T> =
     Widget Function(BuildContext context, T value);
 
+/// A dropdown select widget that presents options in a popup overlay.
+///
+/// This widget provides a button-like interface that, when pressed, shows
+/// a dropdown list of selectable options. It's ideal for settings, filters,
+/// and other single-choice selection scenarios.
+///
+/// {@tool snippet}
+/// ```dart
+/// OmarchySelect<String>(
+///   value: Some(selectedTheme),
+///   options: ['light', 'dark', 'auto'],
+///   builder: (context, value) => Text(value.toUpperCase()),
+///   onChanged: (newTheme) => setState(() => selectedTheme = newTheme),
+///   placeholder: Text('Choose theme...'),
+/// )
+/// ```
+/// {@end-tool}
 class OmarchySelect<T> extends StatelessWidget {
+  /// Creates a select widget with the specified options and builder.
   const OmarchySelect({
     super.key,
     required this.builder,
@@ -16,13 +35,30 @@ class OmarchySelect<T> extends StatelessWidget {
     this.maxPopOverHeight = 500,
   });
 
+  /// The focus node for keyboard navigation.
   final FocusNode? focusNode;
+
+  /// The currently selected value.
+  ///
+  /// Use [Some(value)] for a selected value or [None()] for no selection.
   final Optional<T> value;
+
+  /// The list of available options to choose from.
   final List<T> options;
+
+  /// The widget to display when no value is selected.
   final Widget? placeholder;
+
+  /// Callback called when a new value is selected.
   final ValueChanged<T>? onChanged;
+
+  /// Function that builds the display widget for each option value.
   final OmarchySelectWidgetBuilder<T> builder;
+
+  /// The direction in which the dropdown opens.
   final OmarchyPopOverDirection direction;
+
+  /// The maximum height of the dropdown popup.
   final double? maxPopOverHeight;
 
   @override

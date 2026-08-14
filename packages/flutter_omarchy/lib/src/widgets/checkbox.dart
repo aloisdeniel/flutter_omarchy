@@ -1,8 +1,34 @@
 import 'package:flutter_omarchy/flutter_omarchy.dart';
 
-enum CheckboxState { checked, unchecked, multiple }
+/// Represents the visual state of a checkbox.
+enum CheckboxState {
+  /// The checkbox is checked (shows a checkmark).
+  checked,
 
+  /// The checkbox is unchecked (empty).
+  unchecked,
+
+  /// The checkbox represents multiple selections (shows a filled square).
+  multiple,
+}
+
+/// A customizable checkbox widget following the Omarchy design system.
+///
+/// This checkbox supports three states: checked, unchecked, and multiple.
+/// It provides visual feedback for hover and press interactions and can be
+/// styled with different accent colors.
+///
+/// {@tool snippet}
+/// ```dart
+/// OmarchyCheckbox(
+///   state: CheckboxState.checked,
+///   accent: AnsiColor.blue,
+///   onPressed: () => setState(() => isChecked = !isChecked),
+/// )
+/// ```
+/// {@end-tool}
 class OmarchyCheckbox extends StatelessWidget {
+  /// Creates an Omarchy checkbox with the specified state and styling.
   const OmarchyCheckbox({
     super.key,
     CheckboxState? state,
@@ -14,9 +40,20 @@ class OmarchyCheckbox extends StatelessWidget {
            state ??
            (isChecked ? CheckboxState.checked : CheckboxState.unchecked);
 
+  /// The current state of the checkbox.
   final CheckboxState state;
+
+  /// The accent color to use for the checkbox when selected.
+  ///
+  /// If null, uses the theme's default foreground color.
   final AnsiColor? accent;
+
+  /// The size of the checkbox.
+  ///
+  /// If null, calculates the size based on the current text style.
   final double? size;
+
+  /// The callback executed when the checkbox is pressed.
   final VoidCallback? onPressed;
 
   @override

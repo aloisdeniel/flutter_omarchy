@@ -1,23 +1,68 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_omarchy/src/theme/theme.dart';
 
+/// A function that builds the child widget with access to a show callback.
 typedef OmarchyPopOverChildWidgetBuilder =
     Widget Function(BuildContext context, VoidCallback show);
+
+/// A function that builds the popup content with access to size and hide callback.
 typedef OmarchyPopOverWidgetBuilder =
     Widget Function(BuildContext context, Size? size, VoidCallback hide);
 
+/// Defines the direction in which a popup should appear relative to its anchor.
 enum OmarchyPopOverDirection {
+  /// Popup appears above the anchor.
   up,
+
+  /// Popup appears above and to the left of the anchor.
   upLeft,
+
+  /// Popup appears above and to the right of the anchor.
   upRight,
+
+  /// Popup appears to the right of the anchor.
   right,
+
+  /// Popup appears below the anchor.
   down,
+
+  /// Popup appears below and to the left of the anchor.
   downLeft,
+
+  /// Popup appears below and to the right of the anchor.
   downRight,
+
+  /// Popup appears to the left of the anchor.
   left,
 }
 
+/// A widget that displays a popup overlay positioned relative to its child.
+///
+/// This widget provides a flexible popup system for dropdowns, context menus,
+/// tooltips, and other overlay content. The popup is positioned using Flutter's
+/// overlay system and can be configured to appear in various directions.
+///
+/// {@tool snippet}
+/// ```dart
+/// OmarchyPopOver(
+///   popOverDirection: OmarchyPopOverDirection.down,
+///   builder: (context, show) => ElevatedButton(
+///     onPressed: show,
+///     child: Text('Show Menu'),
+///   ),
+///   popOverBuilder: (context, size, hide) => Material(
+///     child: Column(
+///       children: [
+///         ListTile(title: Text('Option 1'), onTap: hide),
+///         ListTile(title: Text('Option 2'), onTap: hide),
+///       ],
+///     ),
+///   ),
+/// )
+/// ```
+/// {@end-tool}
 class OmarchyPopOver extends StatefulWidget {
+  /// Creates a popup overlay widget.
   const OmarchyPopOver({
     super.key,
     required this.builder,
@@ -27,10 +72,19 @@ class OmarchyPopOver extends StatefulWidget {
     this.popOverDirection = OmarchyPopOverDirection.downRight,
   });
 
+  /// Builder for the child widget that triggers the popup.
   final OmarchyPopOverChildWidgetBuilder builder;
+
+  /// Builder for the popup content.
   final OmarchyPopOverWidgetBuilder popOverBuilder;
+
+  /// Whether to show the popup even when not linked to the overlay.
   final bool showWhenUnlinked;
+
+  /// Additional offset to apply to the popup position.
   final Offset offset;
+
+  /// The direction in which the popup should appear.
   final OmarchyPopOverDirection popOverDirection;
 
   @override
@@ -40,6 +94,7 @@ class OmarchyPopOver extends StatefulWidget {
 class _OmarchyPopOverState extends State<OmarchyPopOver> {
   final _link = LayerLink();
   final _controller = OverlayPortalController();
+  final _animationController = OmarchyPopOverAnimationController();
 
   @override
   void didUpdateWidget(covariant OmarchyPopOver oldWidget) {
@@ -92,7 +147,7 @@ class _OmarchyPopOverState extends State<OmarchyPopOver> {
               Positioned.fill(
                 child: GestureDetector(
                   onTap: () {
-                    _controller.hide();
+                    _animationController.hide();
                   },
                   child: Container(color: Color(0x01000000)),
                 ),
@@ -105,10 +160,18 @@ class _OmarchyPopOverState extends State<OmarchyPopOver> {
                 followerAnchor: anchor.popOverAnchor,
                 child: IntrinsicHeight(
                   child: IntrinsicWidth(
-                    child: widget.popOverBuilder(
-                      context,
-                      _link.leaderSize,
-                      _controller.hide,
+                    child: OmarchyPopOverAnimation(
+                      controller: _animationController,
+                      onHideCompleted: () {
+                        if (mounted) {
+                          _controller.hide();
+                        }
+                      },
+                      builder: (context, hide) => widget.popOverBuilder(
+                        context,
+                        _link.leaderSize,
+                        hide,
+                      ),
                     ),
                   ),
                 ),
@@ -141,6 +204,96 @@ class OmarchyPopOverContainer extends StatelessWidget {
         border: Border.all(color: theme.colors.border, width: 2),
       ),
       child: child,
+    );
+  }
+}
+
+class OmarchyPopOverAnimationController {
+  OmarchyPopOverAnimationController();
+
+  _OmarchyPopOverAnimationState? _state;
+
+  void hide() {
+    _state?.hide();
+  }
+}
+
+class OmarchyPopOverAnimation extends StatefulWidget {
+  const OmarchyPopOverAnimation({
+    super.key,
+    required this.builder,
+    required this.onHideCompleted,
+    this.controller,
+  });
+
+  final OmarchyPopOverAnimationController? controller;
+  final Widget Function(BuildContext context, VoidCallback hide) builder;
+  final VoidCallback? onHideCompleted;
+
+  @override
+  State<OmarchyPopOverAnimation> createState() =>
+      _OmarchyPopOverAnimationState();
+}
+
+class _OmarchyPopOverAnimationState extends State<OmarchyPopOverAnimation> {
+  var isShowing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller?._state = this;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {
+          isShowing = true;
+        });
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant OmarchyPopOverAnimation oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.controller != oldWidget.controller) {
+      oldWidget.controller?._state = null;
+      widget.controller?._state = this;
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller?._state = null;
+    super.dispose();
+  }
+
+  void hide() {
+    if (mounted && isShowing) {
+      setState(() {
+        isShowing = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final child = widget.builder(context, hide);
+    return AnimatedOpacity(
+      opacity: isShowing ? 1.0 : 0.0,
+      duration: const Duration(milliseconds: 120),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 120),
+        transformAlignment: Alignment.center,
+        transform: Matrix4.identity()
+          ..translate(0.0, isShowing ? 0.0 : -10.0)
+          ..scale(isShowing ? 1.0 : 0.98),
+        curve: Curves.easeInOut,
+        onEnd: () {
+          if (isShowing == false) {
+            widget.onHideCompleted?.call();
+          }
+        },
+        child: child,
+      ),
     );
   }
 }

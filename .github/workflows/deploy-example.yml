@@ -25,7 +25,7 @@ jobs:
         run: |
           cd packages/flutter_omarchy/example
           flutter pub get
-          flutter build web --release --wasm --no-tree-shake-icons 
+          flutter build web --release --wasm --no-tree-shake-icons  --base-href /flutter_omarchy/ 
       
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

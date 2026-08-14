@@ -18,8 +18,8 @@ jobs:
           #- arch: arm64
           #  runs-on: ubuntu-24.04-arm
 
-    name: linux-${{#mustacheCase}} matrix.arch ${{/mustacheCase}}
-    runs-on: ${{#mustacheCase}} matrix.runs-on ${{/mustacheCase}}
+    name: linux-${{#mustacheCase}} matrix.arch {{/mustacheCase}}
+    runs-on: ${{#mustacheCase}} matrix.runs-on {{/mustacheCase}}
 
     steps:
       - name: Checkout
@@ -55,23 +55,23 @@ jobs:
 
       - name: Build Linux (release)
         run: |
-          tag="${{#mustacheCase}} github.ref_name ${{/mustacheCase}}"
-          build_name=${tag#"v"}
-          build_number="${{#mustacheCase}} github.run_id ${{/mustacheCase}}"
+          tag="${{#mustacheCase}} github.ref_name {{/mustacheCase}}"
+          build_name=$${{#mustacheCase}}tag#"v"{{/mustacheCase}}
+          build_number="${{#mustacheCase}} github.run_id {{/mustacheCase}}"
           cd packages/{{project_name.snakeCase()}}
           flutter build linux --release --build-name $build_name --build-number $build_number
 
       - name: Create archive
         run: |
-          cd packages/{{project_name.snakeCase()}}/build/linux/${{#mustacheCase}} matrix.arch ${{/mustacheCase}}/release/bundle/
-          tar -czf {{executable_name}}-${{#mustacheCase}} github.ref_name }}-${{#mustacheCase}} matrix.arch ${{/mustacheCase}}.tar.gz {{executable_name}} lib data
-          mv {{executable_name}}-${{#mustacheCase}} github.ref_name }}-${{#mustacheCase}} matrix.arch ${{/mustacheCase}}.tar.gz ../../../../../../../
+          cd packages/{{project_name.snakeCase()}}/build/linux/${{#mustacheCase}} matrix.arch {{/mustacheCase}}/release/bundle/
+          tar -czf {{executable_name}}-${{#mustacheCase}} github.ref_name {{/mustacheCase}}-${{#mustacheCase}} matrix.arch {{/mustacheCase}}.tar.gz {{executable_name}} lib data
+          mv {{executable_name}}-${{#mustacheCase}} github.ref_name {{/mustacheCase}}-${{#mustacheCase}} matrix.arch {{/mustacheCase}}.tar.gz ../../../../../../../
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: {{executable_name}}-${{#mustacheCase}} matrix.arch ${{/mustacheCase}}
-          path: {{executable_name}}-${{#mustacheCase}} github.ref_name }}-${{#mustacheCase}} matrix.arch ${{/mustacheCase}}.tar.gz
+          name: {{executable_name}}-${{#mustacheCase}} matrix.arch {{/mustacheCase}}
+          path: {{executable_name}}-${{#mustacheCase}} github.ref_name {{/mustacheCase}}-${{#mustacheCase}} matrix.arch {{/mustacheCase}}.tar.gz
 
   release:
     needs: [build]
@@ -103,15 +103,15 @@ jobs:
 
         echo "" >> CHANGELOG.md
         echo "## Downloads:" >> CHANGELOG.md
-        echo "- [{{executable_name}}-${{#mustacheCase}} github.ref_name ${{/mustacheCase}}-x64.tar.gz](https://github.com/${{#mustacheCase}} github.repository ${{/mustacheCase}}/releases/download/${{#mustacheCase}} github.ref_name ${{/mustacheCase}}/{{executable_name}}-${{#mustacheCase}} github.ref_name ${{/mustacheCase}}-x64.tar.gz) - x64" >> CHANGELOG.md
+        echo "- [{{executable_name}}-${{#mustacheCase}} github.ref_name {{/mustacheCase}}-x64.tar.gz](https://github.com/${{#mustacheCase}} github.repository {{/mustacheCase}}/releases/download/${{#mustacheCase}} github.ref_name {{/mustacheCase}}/{{executable_name}}-${{#mustacheCase}} github.ref_name {{/mustacheCase}}-x64.tar.gz) - x64" >> CHANGELOG.md
 
     - name: Create release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          omarchy_calculator-x64/{{executable_name}}-${{#mustacheCase}} github.ref_name ${{/mustacheCase}}-x64.tar.gz
+          omarchy_calculator-x64/{{executable_name}}-${{#mustacheCase}} github.ref_name {{/mustacheCase}}-x64.tar.gz
         body_path: CHANGELOG.md
         draft: false
-        prerelease: ${{#mustacheCase}} contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') || contains(github.ref_name, 'rc') ${{/mustacheCase}}
+        prerelease: ${{#mustacheCase}} contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') || contains(github.ref_name, 'rc') {{/mustacheCase}}
       env:
         GITHUB_TOKEN: ${{#mustacheCase}} secrets.GITHUB_TOKEN ${{/mustacheCase}}

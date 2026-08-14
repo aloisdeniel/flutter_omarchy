@@ -40,7 +40,7 @@ Future<void> run(
   await runProcess('flutter', [
     'create',
     '--platforms',
-    'linux,macos',
+    'linux,macos,web',
     '--no-pub',
     '.',
   ], workingDirectory: packageDir);

@@ -5,7 +5,12 @@ import 'package:flutter_omarchy/src/widgets/utils/default_padding.dart';
 import 'package:flutter_omarchy/src/widgets/utils/pointer_area.dart';
 import 'package:flutter_omarchy/src/widgets/utils/selected.dart';
 
+/// A horizontal scrollable container for displaying tabs.
+///
+/// This widget provides a consistent tab bar interface with a dark background
+/// and horizontal scrolling support when tabs overflow the available width.
 class OmarchyTabs extends StatelessWidget {
+  /// Creates a tabs container with the specified [children] and optional [padding].
   const OmarchyTabs({
     super.key,
     required this.children,
@@ -15,7 +20,10 @@ class OmarchyTabs extends StatelessWidget {
     ),
   });
 
+  /// The padding around the tabs container.
   final EdgeInsetsGeometry padding;
+  
+  /// The list of tab widgets to display.
   final List<Widget> children;
 
   @override
@@ -38,7 +46,25 @@ class OmarchyTabs extends StatelessWidget {
   }
 }
 
+/// A single tab widget for use within [OmarchyTabs].
+///
+/// This tab displays a title and optional icon, with support for close
+/// functionality and active/inactive states. It provides visual feedback
+/// for hover and press interactions.
+///
+/// {@tool snippet}
+/// ```dart
+/// OmarchyTab(
+///   title: Text('Document.txt'),
+///   icon: Icon(Icons.text_snippet),
+///   isActive: true,
+///   onTap: () => openDocument(),
+///   onClose: () => closeDocument(),
+/// )
+/// ```
+/// {@end-tool}
 class OmarchyTab extends StatelessWidget {
+  /// Creates a tab with the specified [title] and optional properties.
   const OmarchyTab({
     super.key,
     required this.title,

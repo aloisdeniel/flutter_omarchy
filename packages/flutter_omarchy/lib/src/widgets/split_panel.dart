@@ -2,7 +2,26 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_omarchy/src/widgets/resize_divider.dart';
 import 'package:flutter_omarchy/src/widgets/utils/panel_size.dart';
 
+/// A resizable split panel layout widget.
+///
+/// This widget creates a layout with two areas separated by a draggable
+/// divider. Users can resize the panels by dragging the divider, making
+/// it ideal for implementing sidebars, inspector panels, and other
+/// resizable layouts common in desktop applications.
+///
+/// {@tool snippet}
+/// ```dart
+/// OmarchySplitPanel(
+///   panel: NavigationPanel(),
+///   child: MainContent(),
+///   panelInitialSize: PanelSize.ratio(0.25),
+///   minPanelSize: PanelSize.absolute(200),
+///   maxPanelSize: PanelSize.absolute(400),
+/// )
+/// ```
+/// {@end-tool}
 class OmarchySplitPanel extends StatefulWidget {
+  /// Creates a split panel with the specified [panel] and [child].
   const OmarchySplitPanel({
     super.key,
     required this.panel,
@@ -14,13 +33,31 @@ class OmarchySplitPanel extends StatefulWidget {
     this.maxPanelSize,
   });
 
-  /// The panel is at the start.
+  /// The text direction that determines panel positioning.
+  ///
+  /// When [TextDirection.ltr], the panel appears on the left (or top).
+  /// When [TextDirection.rtl], the panel appears on the right (or bottom).
   final TextDirection direction;
+  
+  /// The orientation of the split layout.
+  ///
+  /// [Axis.horizontal] creates a vertical split with panels side by side.
+  /// [Axis.vertical] creates a horizontal split with panels stacked.
   final Axis orientation;
+  
+  /// The panel widget (typically a sidebar or secondary content area).
   final Widget panel;
+  
+  /// The main content widget.
   final Widget child;
+  
+  /// The initial size of the panel.
   final PanelSize panelInitialSize;
+  
+  /// The minimum size the panel can be resized to.
   final PanelSize? minPanelSize;
+  
+  /// The maximum size the panel can be resized to.
   final PanelSize? maxPanelSize;
 
   @override
