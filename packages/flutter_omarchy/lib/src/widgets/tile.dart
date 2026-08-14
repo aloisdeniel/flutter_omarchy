@@ -26,6 +26,7 @@ class OmarchyTile extends StatelessWidget {
     required this.title,
     this.description,
     this.leading,
+    this.trailing,
     this.onTap,
   });
 
@@ -37,6 +38,10 @@ class OmarchyTile extends StatelessWidget {
 
   /// An optional widget displayed at the start of the tile, such as an icon.
   final Widget? leading;
+
+  /// An optional widget displayed at the end of the tile, such as a badge
+  /// or a keyboard shortcut hint.
+  final Widget? trailing;
 
   /// The callback executed when the tile is tapped.
   final VoidCallback? onTap;
@@ -71,27 +76,32 @@ class OmarchyTile extends StatelessWidget {
                 ),
             ],
           );
-          if (leading case final leading?) {
+          if (leading != null || trailing != null) {
             child = Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 8,
               children: [
-                IconTheme(
-                  data: IconThemeData(
-                    color: switch (state) {
-                      _ when isSelected => theme.colors.selectedText,
-                      PointerState(isPressed: true) =>
-                        theme.colors.selectedText,
-                      PointerState(isHovering: true) =>
-                        theme.colors.selectedText,
-                      _ => theme.colors.bright.black,
-                    },
-                    size: 22,
+                if (leading case final leading?)
+                  IconTheme(
+                    data: IconThemeData(
+                      color: switch (state) {
+                        _ when isSelected => theme.colors.selectedText,
+                        PointerState(isPressed: true) =>
+                          theme.colors.selectedText,
+                        PointerState(isHovering: true) =>
+                          theme.colors.selectedText,
+                        _ => theme.colors.bright.black,
+                      },
+                      size: 22,
+                    ),
+                    child: leading,
                   ),
-
-                  child: leading,
-                ),
                 Expanded(child: child),
+                if (trailing case final trailing?)
+                  DefaultForeground(
+                    foreground: theme.colors.bright.black,
+                    child: trailing,
+                  ),
               ],
             );
           }

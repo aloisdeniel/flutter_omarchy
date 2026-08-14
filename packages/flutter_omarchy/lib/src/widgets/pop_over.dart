@@ -97,11 +97,6 @@ class _OmarchyPopOverState extends State<OmarchyPopOver> {
   final _animationController = OmarchyPopOverAnimationController();
 
   @override
-  void didUpdateWidget(covariant OmarchyPopOver oldWidget) {
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
   Widget build(BuildContext context) {
     final anchor = switch (widget.popOverDirection) {
       OmarchyPopOverDirection.upLeft => (
@@ -185,15 +180,12 @@ class _OmarchyPopOverState extends State<OmarchyPopOver> {
   }
 }
 
+/// The default container for pop over content: an opaque surface using the
+/// theme background with an accent border.
 class OmarchyPopOverContainer extends StatelessWidget {
-  const OmarchyPopOverContainer({
-    super.key,
-    required this.child,
-    this.alignment,
-  });
+  const OmarchyPopOverContainer({super.key, required this.child});
 
   final Widget child;
-  final Alignment? alignment;
 
   @override
   Widget build(BuildContext context) {

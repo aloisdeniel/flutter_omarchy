@@ -1,21 +1,43 @@
 import 'package:flutter_omarchy/flutter_omarchy.dart';
 
+/// A toggle switch widget following the Omarchy design system.
+///
+/// This toggle represents an on/off state with a sliding knob. It provides
+/// visual feedback for hover and focus interactions and can be styled with
+/// different accent colors.
+///
+/// {@tool snippet}
+/// ```dart
+/// OmarchyToggle(
+///   value: isEnabled,
+///   accent: AnsiColor.green,
+///   onPressed: () => setState(() => isEnabled = !isEnabled),
+/// )
+/// ```
+/// {@end-tool}
 class OmarchyToggle extends StatelessWidget {
+  /// Creates an Omarchy toggle with the specified [value] and styling.
   const OmarchyToggle({
     super.key,
     this.value = false,
     this.accent,
     this.onPressed,
+    this.focusNode,
   });
+
+  /// Whether the toggle is on.
   final bool value;
 
-  /// The accent color to use for the checkbox when selected.
+  /// The accent color to use for the toggle when on.
   ///
   /// If null, uses the theme's default foreground color.
   final AnsiColor? accent;
 
-  /// The callback executed when the checkbox is pressed.
+  /// The callback executed when the toggle is pressed.
   final VoidCallback? onPressed;
+
+  /// The focus node for keyboard navigation.
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +51,11 @@ class OmarchyToggle extends StatelessWidget {
     const size = Size(28, 14);
     return PointerArea(
       onTap: onPressed,
+      focusNode: focusNode,
       builder: (context, state, child) {
+        final highlighted = state.isHovering || state.hasFocus;
         final fill = switch (state) {
-          PointerState(isHovering: true) when value =>
-            theme.colors.bright.white,
+          _ when highlighted && value => theme.colors.bright.white,
           _ when value => background,
           _ => theme.colors.normal.black,
         };
@@ -51,13 +74,13 @@ class OmarchyToggle extends StatelessWidget {
             decoration: BoxDecoration(
               color: value
                   ? theme.colors.normal.black
-                  : (state.isHovering ? foreground : theme.colors.normal.white),
+                  : (highlighted ? foreground : theme.colors.normal.white),
               borderRadius: BorderRadius.circular(1),
             ),
             curve: Curves.easeInOut,
             duration: const Duration(milliseconds: 120),
             height: size.height - 4,
-            width: (state.isHovering ? 2 : 0) + size.height - 4,
+            width: (highlighted ? 2 : 0) + size.height - 4,
           ),
         );
       },

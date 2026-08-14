@@ -361,6 +361,30 @@ class _WidgetsPageState extends State<WidgetsPage> {
                     ],
                   ),
                   Section(
+                    title: 'Badge',
+                    children: [
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          for (final accent in AnsiColor.values)
+                            OmarchyBadge(
+                              accent: accent,
+                              child: Text(accent.name.toUpperCase()),
+                            ),
+                          for (final accent in AnsiColor.values)
+                            OmarchyBadge.count(
+                              (accent.index + 1) * 21,
+                              max: 99,
+                              accent: accent,
+                              outlined: true,
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Section(
                     title: 'Checkbox',
                     children: [
                       Wrap(
@@ -372,6 +396,62 @@ class _WidgetsPageState extends State<WidgetsPage> {
                             for (final accent in AnsiColor.values)
                               OmarchyCheckbox(accent: accent, state: state),
                         ],
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Radio',
+                    children: [
+                      StateBuilder<String>(
+                        initialState: 'medium',
+                        builder: (context, selected, setter) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 8,
+                            children: [
+                              for (final option in [
+                                'small',
+                                'medium',
+                                'large',
+                              ])
+                                Row(
+                                  spacing: 8,
+                                  children: [
+                                    OmarchyRadio<String>(
+                                      value: option,
+                                      groupValue: selected,
+                                      accent: AnsiColor.blue,
+                                      onChanged: setter,
+                                    ),
+                                    Text(option),
+                                  ],
+                                ),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Slider',
+                    children: [
+                      StateBuilder<double>(
+                        initialState: 0.3,
+                        builder: (context, value, setter) {
+                          return Column(
+                            spacing: 8,
+                            children: [
+                              OmarchySlider(value: value, onChanged: setter),
+                              OmarchySlider(
+                                value: value,
+                                accent: AnsiColor.green,
+                                divisions: 10,
+                                onChanged: setter,
+                              ),
+                              OmarchySlider(value: value),
+                            ],
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -634,6 +714,131 @@ class _WidgetsPageState extends State<WidgetsPage> {
                             },
                           );
                         },
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Dialog',
+                    children: [
+                      Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
+                        children: [
+                          OmarchyButton(
+                            child: Text('Show dialog'),
+                            onPressed: () {
+                              showOmarchyDialog<void>(
+                                context: context,
+                                builder: (context) => OmarchyDialog(
+                                  title: Text('About'),
+                                  content: Text(
+                                    'A dialog following the Omarchy design '
+                                    'system, with a title, content and '
+                                    'actions.',
+                                  ),
+                                  actions: [
+                                    OmarchyButton(
+                                      child: Text('Close'),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                          OmarchyButton(
+                            child: Text('Confirm something'),
+                            onPressed: () async {
+                              final confirmed = await showOmarchyConfirmDialog(
+                                context: context,
+                                title: Text('Delete file'),
+                                message: Text(
+                                  'This action cannot be undone. Continue?',
+                                ),
+                                accent: AnsiColor.red,
+                                confirmLabel: Text('Delete'),
+                              );
+                              if (context.mounted && confirmed == true) {
+                                showOmarchyToast(
+                                  context: context,
+                                  message: Text('File deleted'),
+                                  accent: AnsiColor.red,
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Toast',
+                    children: [
+                      Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
+                        children: [
+                          for (final accent in [
+                            AnsiColor.white,
+                            AnsiColor.green,
+                            AnsiColor.yellow,
+                            AnsiColor.red,
+                          ])
+                            OmarchyButton(
+                              child: Text('Toast ${accent.name}'),
+                              onPressed: () {
+                                showOmarchyToast(
+                                  context: context,
+                                  message: Text(
+                                    'A ${accent.name} notification',
+                                  ),
+                                  accent: accent,
+                                );
+                              },
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Section(
+                    title: 'Context Menu',
+                    children: [
+                      OmarchyContextMenuArea(
+                        entries: [
+                          OmarchyContextMenuItem(
+                            label: 'Copy',
+                            icon: OmarchyIcons.codCopy,
+                            shortcut: 'Ctrl+C',
+                            onSelected: () {},
+                          ),
+                          OmarchyContextMenuItem(
+                            label: 'Paste',
+                            icon: OmarchyIcons.codClippy,
+                            shortcut: 'Ctrl+V',
+                            onSelected: () {},
+                          ),
+                          const OmarchyContextMenuDivider(),
+                          OmarchyContextMenuItem(
+                            label: 'Disabled action',
+                            enabled: false,
+                          ),
+                          OmarchyContextMenuItem(
+                            label: 'Delete',
+                            icon: OmarchyIcons.codTrash,
+                            accent: AnsiColor.red,
+                            onSelected: () {},
+                          ),
+                        ],
+                        child: Container(
+                          height: 120,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: theme.colors.normal.black,
+                            ),
+                          ),
+                          child: Center(child: Text('Right click here')),
+                        ),
                       ),
                     ],
                   ),

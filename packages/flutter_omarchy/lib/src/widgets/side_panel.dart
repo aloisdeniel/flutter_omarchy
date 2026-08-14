@@ -74,10 +74,10 @@ class OmarchySidePanel extends StatefulWidget {
   ///
   /// Throws an exception if no [OmarchySidePanel] is found in the widget tree.
   static OmarchySidePanelController controllerOf(BuildContext context) {
-    final state = context.findAncestorStateOfType<_OmarchySplitPanelState>();
+    final state = context.findAncestorStateOfType<_OmarchySidePanelState>();
     if (state == null) {
       throw Exception(
-        'No OmarchySplitPanel found in context. Make sure to wrap your widget with OmarchySplitPanel.',
+        'No OmarchySidePanel found in context. Make sure to wrap your widget with OmarchySidePanel.',
       );
     }
     return state._controller;
@@ -115,10 +115,10 @@ class OmarchySidePanel extends StatefulWidget {
   final Color? barrierColor;
 
   @override
-  State<OmarchySidePanel> createState() => _OmarchySplitPanelState();
+  State<OmarchySidePanel> createState() => _OmarchySidePanelState();
 }
 
-class _OmarchySplitPanelState extends State<OmarchySidePanel> {
+class _OmarchySidePanelState extends State<OmarchySidePanel> {
   final childKey = GlobalKey();
   final panelKey = GlobalKey();
   late var _controller = widget.controller ?? OmarchySidePanelController();
@@ -144,7 +144,10 @@ class _OmarchySplitPanelState extends State<OmarchySidePanel> {
     super.didUpdateWidget(oldWidget);
 
     if (widget.controller != oldWidget.controller) {
-      _controller.dispose();
+      // Only dispose the controller if it was created internally.
+      if (oldWidget.controller == null) {
+        _controller.dispose();
+      }
       setState(() {
         _controller = widget.controller ?? OmarchySidePanelController();
       });

@@ -1,3 +1,35 @@
+## 0.3.0
+
+### New widgets
+
+* `OmarchyDialog`, `showOmarchyDialog` and `showOmarchyConfirmDialog` for modal dialogs.
+* `OmarchyContextMenuArea` and `showOmarchyContextMenu` for right-click context menus (with icons, shortcut hints, accents, disabled items and dividers).
+* `showOmarchyToast` for transient notifications stacked at the bottom right of the screen.
+* `OmarchySlider`, a horizontal slider with divisions and keyboard support.
+* `OmarchyRadio`, a radio button for single-choice groups.
+* `OmarchyBadge`, a small status/count label (filled and outlined).
+
+### Improvements
+
+* `OmarchyTab.closable` now actually invokes `onClose` when the close icon is pressed (with its own hover feedback).
+* `OmarchyCommandPanel` keyboard navigation (arrows, Enter, Escape) now works, and the item list refreshes when `items` changes.
+* `OmarchySelect` now highlights the currently selected option in the dropdown.
+* `OmarchyCheckbox`, `OmarchyToggle` and the new `OmarchyRadio` accept a `focusNode` and show a focus highlight; `OmarchyButton` gained `autofocus`.
+* `OmarchyTile` gained a `trailing` widget slot.
+* `OmarchyResizeDivider` uses the correct resize cursor for vertical splits.
+* `OmarchySplitPanel` respects `minPanelSize`/`maxPanelSize` while dragging and sizes the panel correctly in vertical orientation.
+* `PanelSize.absolute` now resolves to its own size instead of the available space.
+* `OmarchyStatusBar` renders `trailing` statuses with proper grouping.
+* The Linux runner of the example (and the `omarchy_app` template) now waits for Flutter's first frame before showing the window, removing the black window at startup. See the README section "Avoid the Black Window at Startup".
+* Lifecycle fixes: external `OmarchySidePanelController`s are no longer disposed by the panel, `OmarchyFocusBorder` disposes its internal focus node, and theme config reloads no longer call `setState` after unmount.
+
+### Breaking changes
+
+* `OmarchyDivider` semantics were inverted and have been fixed: `direction` is now the axis along which the line extends (`OmarchyDivider.horizontal()` is a full-width line for columns, `OmarchyDivider.vertical()` a full-height line for rows). The default is now horizontal.
+* Removed the unused `padding` parameter of `OmarchyButton` (use the style's `padding` instead).
+* Removed the unused `alignment` parameter of `OmarchyPopOverContainer`.
+* Removed the unimplemented `OmarchyBordered` placeholder.
+
 ## 0.2.0
 
 * Support for the latest Omarchy theming system: colors are now read from the canonical `~/.local/state/omarchy/current/theme/colors.toml` palette.

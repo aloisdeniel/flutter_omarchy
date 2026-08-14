@@ -82,10 +82,23 @@ class _OmarchySplitPanelState extends State<OmarchySplitPanel> {
         final panelMinSize = (widget.minPanelSize?.resolve(maxSize) ?? 0.0)
             .clamp(0.0, maxSize);
         final panelMaxSize = (widget.maxPanelSize?.resolve(maxSize) ?? maxSize)
-            .clamp(0.0, maxSize);
-        final panelSizePoints = panelSize.resolve(panelMaxSize);
+            .clamp(panelMinSize, maxSize);
+        final panelSizePoints = panelSize
+            .resolve(maxSize)
+            .clamp(panelMinSize, panelMaxSize);
         var children = [
-          SizedBox(key: panelKey, width: panelSizePoints, child: widget.panel),
+          switch (widget.orientation) {
+            Axis.horizontal => SizedBox(
+              key: panelKey,
+              width: panelSizePoints,
+              child: widget.panel,
+            ),
+            Axis.vertical => SizedBox(
+              key: panelKey,
+              height: panelSizePoints,
+              child: widget.panel,
+            ),
+          },
           OmarchyResizeDivider(
             key: Key('divider'),
             min: panelMinSize,
@@ -96,7 +109,14 @@ class _OmarchySplitPanelState extends State<OmarchySplitPanel> {
               if (widget.direction == TextDirection.rtl) {
                 v = -v;
               }
-              final newSize = panelSize.addDelta(maxSize, v);
+              final requested = (panelSizePoints + v).clamp(
+                panelMinSize,
+                panelMaxSize,
+              );
+              final newSize = panelSize.addDelta(
+                maxSize,
+                requested - panelSizePoints,
+              );
               if (panelSize != newSize) {
                 setState(() {
                   panelSize = newSize;

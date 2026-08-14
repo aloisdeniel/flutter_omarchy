@@ -36,12 +36,16 @@ class OmarchyCheckbox extends StatelessWidget {
     this.accent,
     this.size,
     this.onPressed,
+    this.focusNode,
   }) : state =
            state ??
            (isChecked ? CheckboxState.checked : CheckboxState.unchecked);
 
   /// The current state of the checkbox.
   final CheckboxState state;
+
+  /// The focus node for keyboard navigation.
+  final FocusNode? focusNode;
 
   /// The accent color to use for the checkbox when selected.
   ///
@@ -72,20 +76,21 @@ class OmarchyCheckbox extends StatelessWidget {
     final size = this.size ?? (theme.text.normal.fontSize ?? 12) * 1.2;
     return PointerArea(
       onTap: onPressed,
+      focusNode: focusNode,
       builder: (context, state, child) {
+        final highlighted = state.isHovering || state.hasFocus;
         final border = switch (state) {
-          PointerState(isHovering: true) when isSelected =>
-            foreground.withValues(alpha: foreground.a * 0.9),
-          PointerState(isHovering: true) => foreground.withValues(
+          _ when highlighted && isSelected => foreground.withValues(
+            alpha: foreground.a * 0.9,
+          ),
+          _ when highlighted => foreground.withValues(
             alpha: foreground.a * 0.6,
           ),
           _ when isSelected => foreground,
           _ => theme.colors.normal.white,
         };
         final fill = switch (state) {
-          PointerState(isHovering: true) when isSelected =>
-            background.withValues(alpha: background.a * 0.6),
-          PointerState(isHovering: true) => background.withValues(
+          _ when highlighted => background.withValues(
             alpha: background.a * 0.6,
           ),
           _ when isSelected => background,

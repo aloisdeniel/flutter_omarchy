@@ -94,7 +94,7 @@ class OmarchyStatusBar extends StatelessWidget {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
-                    children: [...trailing..group()].reversed.toList(),
+                    children: trailing.group().toList().reversed.toList(),
                   ),
                 ),
               ),

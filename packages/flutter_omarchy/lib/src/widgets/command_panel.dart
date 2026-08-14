@@ -59,6 +59,23 @@ class _OmarchyCommandPanelState<T> extends State<OmarchyCommandPanel<T>> {
   }
 
   @override
+  void didUpdateWidget(covariant OmarchyCommandPanel<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.items != oldWidget.items) {
+      _onQueryChanged();
+    }
+  }
+
+  /// The number of results that can be navigated with the keyboard, which is
+  /// limited to the displayed results.
+  int get _navigableCount {
+    final count = _filteredItems.length;
+    return count > widget.maxDisplayedResults
+        ? widget.maxDisplayedResults
+        : count;
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     _focusNode.dispose();
@@ -88,19 +105,19 @@ class _OmarchyCommandPanelState<T> extends State<OmarchyCommandPanel<T>> {
   }
 
   void _selectNext() {
-    if (_filteredItems.isNotEmpty) {
+    if (_navigableCount > 0) {
       setState(() {
-        _selectedIndex = (_selectedIndex + 1) % _filteredItems.length;
+        _selectedIndex = (_selectedIndex + 1) % _navigableCount;
       });
     }
   }
 
   void _selectPrevious() {
-    if (_filteredItems.isNotEmpty) {
+    if (_navigableCount > 0) {
       setState(() {
         _selectedIndex = _selectedIndex > 0
             ? _selectedIndex - 1
-            : _filteredItems.length - 1;
+            : _navigableCount - 1;
       });
     }
   }
@@ -113,23 +130,20 @@ class _OmarchyCommandPanelState<T> extends State<OmarchyCommandPanel<T>> {
     }
   }
 
-  bool _handleKeyPress(KeyEvent event) {
-    if (event is KeyDownEvent) {
+  KeyEventResult _handleKeyPress(FocusNode node, KeyEvent event) {
+    if (event is KeyDownEvent || event is KeyRepeatEvent) {
       if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
         _selectNext();
-        return true;
+        return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
         _selectPrevious();
-        return true;
-      } else if (event.logicalKey == LogicalKeyboardKey.enter) {
-        _selectItem();
-        return true;
+        return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.escape) {
         Navigator.of(context).pop();
-        return true;
+        return KeyEventResult.handled;
       }
     }
-    return false;
+    return KeyEventResult.ignored;
   }
 
   @override
@@ -139,8 +153,9 @@ class _OmarchyCommandPanelState<T> extends State<OmarchyCommandPanel<T>> {
         .take(widget.maxDisplayedResults)
         .toList();
 
-    return KeyboardListener(
-      focusNode: FocusNode(),
+    // Key events bubble up the focus tree from the focused text input, so
+    // this ancestor [Focus] receives the navigation keys.
+    return Focus(
       onKeyEvent: _handleKeyPress,
       child: OmarchyPopOverContainer(
         child: Container(
@@ -158,6 +173,7 @@ class _OmarchyCommandPanelState<T> extends State<OmarchyCommandPanel<T>> {
                 focusNode: _focusNode,
                 placeholder: Text(widget.placeholder),
                 autofocus: widget.autofocus,
+                onSubmitted: (_) => _selectItem(),
               ),
               OmarchyDivider(),
               if (displayedItems.isNotEmpty)

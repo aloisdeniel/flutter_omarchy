@@ -257,7 +257,7 @@ class FilledOmarchyButtonStyle extends OmarchyButtonStyle {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    if (other is! OutlineOmarchyButtonStyle) return false;
+    if (other is! FilledOmarchyButtonStyle) return false;
     return accent == other.accent && padding == other.padding;
   }
 
@@ -376,7 +376,7 @@ class BarOmarchyButtonStyle extends OmarchyButtonStyle {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    if (other is! OutlineOmarchyButtonStyle) return false;
+    if (other is! BarOmarchyButtonStyle) return false;
     return accent == other.accent;
   }
 
@@ -407,9 +407,9 @@ class OmarchyButton extends StatelessWidget {
     super.key,
     required this.child,
     this.onPressed,
-    this.padding = const EdgeInsets.all(16),
     this.style,
     this.focusNode,
+    this.autofocus = false,
     this.borderWidth,
   });
 
@@ -422,9 +422,6 @@ class OmarchyButton extends StatelessWidget {
   /// default to an outline style with white accent color.
   final OmarchyButtonStyle? style;
 
-  /// The padding inside the button.
-  final EdgeInsets padding;
-
   /// The callback executed when the button is pressed.
   ///
   /// If null, the button will be disabled.
@@ -432,6 +429,9 @@ class OmarchyButton extends StatelessWidget {
 
   /// The focus node for keyboard navigation.
   final FocusNode? focusNode;
+
+  /// Whether this button should be focused initially.
+  final bool autofocus;
 
   /// Override for the border width defined in the style.
   final double? borderWidth;
@@ -445,6 +445,7 @@ class OmarchyButton extends StatelessWidget {
             .resolve(context);
     return PointerArea(
       focusNode: focusNode,
+      autofocus: autofocus,
       onTap: onPressed,
       child: child,
       builder: (context, state, child) {

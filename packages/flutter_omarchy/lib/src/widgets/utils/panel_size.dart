@@ -39,12 +39,12 @@ class _PanelSizeAbsolute extends PanelSize {
 
   @override
   double resolve(double size) {
-    return size.clamp(0, size);
+    return this.size.clamp(0, size);
   }
 
   @override
   PanelSize addDelta(double size, double delta) {
-    return PanelSize.absolute((size + delta).clamp(0, size));
+    return PanelSize.absolute((this.size + delta).clamp(0, size));
   }
 }
 

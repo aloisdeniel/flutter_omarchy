@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_omarchy/src/theme/theme.dart';
+import 'package:flutter_omarchy/src/widgets/icon_data.g.dart';
 import 'package:flutter_omarchy/src/widgets/utils/default_foreground.dart';
 import 'package:flutter_omarchy/src/widgets/utils/default_padding.dart';
 import 'package:flutter_omarchy/src/widgets/utils/pointer_area.dart';
@@ -83,7 +84,7 @@ class OmarchyTab extends StatelessWidget {
     this.onTap,
     Widget? close,
     this.isActive = false,
-  }) : close = close ?? const Icon(Icons.close);
+  }) : close = close ?? const Icon(OmarchyIcons.codClose);
 
   final bool isActive;
   final Widget? icon;
@@ -103,7 +104,22 @@ class OmarchyTab extends StatelessWidget {
         children: [
           ?icon,
           child,
-          ?close,
+          if (close case final close?)
+            onClose != null
+                ? PointerArea(
+                    onTap: onClose,
+                    builder: (context, state, _) => DefaultForeground(
+                      foreground: switch (state) {
+                        PointerState(isPressed: true) =>
+                          theme.colors.bright.white,
+                        PointerState(isHovering: true) =>
+                          theme.colors.bright.red,
+                        _ => null,
+                      },
+                      child: close,
+                    ),
+                  )
+                : close,
         ],
       );
     }

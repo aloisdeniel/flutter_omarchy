@@ -73,7 +73,10 @@ class OmarchySelect<T> extends StatelessWidget {
             children: [
               for (final v in options)
                 Selected(
-                  isSelected: value == v,
+                  isSelected: switch (value) {
+                    Some(value: final selected) => selected == v,
+                    None() => false,
+                  },
                   child: OmarchyTile(
                     title: builder(context, v),
                     onTap: () {
@@ -86,16 +89,6 @@ class OmarchySelect<T> extends StatelessWidget {
           ),
         );
         return OmarchyPopOverContainer(
-          alignment: switch (direction) {
-            OmarchyPopOverDirection.upLeft => Alignment.bottomLeft,
-            OmarchyPopOverDirection.upRight => Alignment.bottomRight,
-            OmarchyPopOverDirection.downLeft => Alignment.topLeft,
-            OmarchyPopOverDirection.downRight => Alignment.topRight,
-            OmarchyPopOverDirection.down => Alignment.topCenter,
-            OmarchyPopOverDirection.up => Alignment.bottomCenter,
-            OmarchyPopOverDirection.left => Alignment.centerRight,
-            OmarchyPopOverDirection.right => Alignment.centerLeft,
-          },
           child: ConstrainedBox(
             constraints: BoxConstraints(
               minWidth: size?.width ?? 0,
@@ -113,7 +106,7 @@ class OmarchySelect<T> extends StatelessWidget {
         borderWidth: 0.0,
         onPressed: onChanged != null ? show : null,
         child: switch (value) {
-          None() => placeholder ?? Text('Select an option'),
+          None() => placeholder ?? const Text('Select an option'),
           Some(value: final v) => builder(context, v),
         },
       ),

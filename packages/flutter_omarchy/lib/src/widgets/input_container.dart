@@ -45,6 +45,7 @@ class OmarchyInputContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = OmarchyTheme.of(context);
     return OmarchyFocusBorder(
+      focusNode: focusNode,
       builder: (context, node) => Container(
         decoration: BoxDecoration(
           border: Border.all(color: theme.colors.normal.white, width: 1),
@@ -81,6 +82,13 @@ class OmarchyFocusBorder extends StatefulWidget {
 
 class _OmarchyFocusBorderState extends State<OmarchyFocusBorder> {
   late final focusNode = widget.focusNode ?? FocusNode();
+
+  @override
+  void dispose() {
+    if (widget.focusNode == null) focusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = OmarchyTheme.of(context);

@@ -110,6 +110,7 @@ class _OmarchyState extends State<Omarchy> {
   void _onConfigChange(OmarchyConfigData config) async {
     final text = OmarchyTextStyleData.fromConfig(config);
     await text.loadFonts();
+    if (!mounted) return;
     setState(() {
       _config = config;
     });

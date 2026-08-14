@@ -601,7 +601,11 @@ class OmarchyTextInputState extends State<OmarchyTextInput>
   void didUpdateWidget(OmarchyTextInput oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.focusNode != oldWidget.focusNode) {
-      oldWidget.focusNode?.removeListener(onFocusChange);
+      (oldWidget.focusNode ?? _focusNode)?.removeListener(onFocusChange);
+      if (widget.focusNode == null) {
+        // Reverting to an internal focus node.
+        _focusNode ??= FocusNode(canRequestFocus: !widget.readOnly);
+      }
       effectiveFocusNode.addListener(onFocusChange);
     }
     if (widget.controller == null && oldWidget.controller != null) {

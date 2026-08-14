@@ -70,7 +70,10 @@ class _OmarchyResizeDividerState extends State<OmarchyResizeDivider> {
   Widget build(BuildContext context) {
     final theme = OmarchyTheme.of(context);
     return PointerArea(
-      hoverCursor: SystemMouseCursors.resizeLeftRight,
+      hoverCursor: switch (widget.orientation) {
+        Axis.horizontal => SystemMouseCursors.resizeLeftRight,
+        Axis.vertical => SystemMouseCursors.resizeUpDown,
+      },
       onPanStart: (_) {
         current = widget.size;
       },

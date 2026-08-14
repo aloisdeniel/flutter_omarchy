@@ -94,7 +94,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
             child = Row(
               children: [
                 Expanded(child: FadeIn(child: HistoryPane())),
-                OmarchyDivider.horizontal(),
+                OmarchyDivider.vertical(),
                 SizedBox(width: 1000, child: child),
               ],
             );
