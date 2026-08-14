@@ -372,6 +372,16 @@ class _FileExplorerPageState extends State<FileExplorerPage> {
               ],
             )
           : null,
+      status: OmarchyStatusBar(
+        leading: [
+          OmarchyStatus(child: Text('${_currentFolder.children.length} items')),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(_currentFolder.path),
+          ),
+        ],
+        trailing: [OmarchyStatus(child: Text('Free space: 128.5 GB'))],
+      ),
       child: Column(
         children: [
           Container(
@@ -393,16 +403,6 @@ class _FileExplorerPageState extends State<FileExplorerPage> {
             ),
           ),
         ],
-      ),
-      status: OmarchyStatusBar(
-        leading: [
-          OmarchyStatus(child: Text('${_currentFolder.children.length} items')),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(_currentFolder.path),
-          ),
-        ],
-        trailing: [OmarchyStatus(child: Text('Free space: 128.5 GB'))],
       ),
     );
   }

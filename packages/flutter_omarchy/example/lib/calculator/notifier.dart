@@ -57,8 +57,6 @@ class CalculatorNotifier extends ChangeNotifier {
         sb.write(" ${t.type.toSymbol()} ");
       } else if (t is _ParenTok) {
         sb.write(t.isOpen ? "(" : ")");
-      } else if (t is _FuncTok) {
-        sb.write("${t.name}(");
       }
     }
     if (_currentEntry.isNotEmpty) {
@@ -456,8 +454,6 @@ class CalculatorNotifier extends ChangeNotifier {
             ops.removeLast(); // Remove the opening parenthesis
           }
         }
-      } else if (t is _FuncTok) {
-        ops.add(t);
       }
     }
 
@@ -509,21 +505,6 @@ class CalculatorNotifier extends ChangeNotifier {
             stack.add(pow(a, b) as double);
             break;
         }
-      } else if (t is _FuncTok) {
-        if (stack.isEmpty) return 0.0;
-        final a = stack.removeLast();
-        switch (t.name) {
-          case 'sin':
-            stack.add(sin(a * pi / 180.0));
-            break;
-          case 'cos':
-            stack.add(cos(a * pi / 180.0));
-            break;
-          case 'tan':
-            if (a % 180 == 90) return double.infinity;
-            stack.add(tan(a * pi / 180.0));
-            break;
-        }
       }
     }
     return stack.isEmpty ? 0.0 : stack.last;
@@ -560,9 +541,4 @@ class _OpTok extends _Token {
 class _ParenTok extends _Token {
   final bool isOpen;
   const _ParenTok(this.isOpen);
-}
-
-class _FuncTok extends _Token {
-  final String name;
-  const _FuncTok(this.name);
 }

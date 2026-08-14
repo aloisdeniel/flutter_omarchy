@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
 import 'package:flutter_omarchy/flutter_omarchy.dart';
 import "utils/copy_image.dart"
-    if (dart.library.html) "utils/copy_image.web.dart";
+    if (dart.library.js_interop) "utils/copy_image.web.dart";
 import 'package:qr/qr.dart';
 
 class QrCodeGeneratorApp extends StatelessWidget {
@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   final _qrKey = GlobalKey();
   final _input = TextEditingController();
   int _typeNumber = 10;
-  int _errorCorrectLevel = QrErrorCorrectLevel.M;
+  QrErrorCorrectLevel _errorCorrectLevel = QrErrorCorrectLevel.medium;
   Object? _error;
   AnsiColor? _color;
   List<bool> _squares = const <bool>[];
@@ -58,13 +58,17 @@ class _HomePageState extends State<HomePage> {
         });
         return;
       }
-      final code = QrCode(_typeNumber, _errorCorrectLevel);
-
+      final payload = QrPayload();
       if (numericRegex.hasMatch(data)) {
-        code.addNumeric(data);
+        payload.addNumeric(data);
       } else {
-        code.addData(data);
+        payload.addString(data);
       }
+      final code = QrCode(
+        payload: payload,
+        errorCorrectLevel: _errorCorrectLevel,
+        minTypeNumber: _typeNumber,
+      );
       final image = QrImage(code);
 
       final squares = <bool>[];
@@ -221,8 +225,8 @@ class _ToolBar extends StatelessWidget {
   final ValueChanged<AnsiColor?> onColorChanged;
   final int typeNumber;
   final ValueChanged<int> onTypeNumberChanged;
-  final int errorCorrectLevel;
-  final ValueChanged<int> onErrorCorrectLevelChanged;
+  final QrErrorCorrectLevel errorCorrectLevel;
+  final ValueChanged<QrErrorCorrectLevel> onErrorCorrectLevelChanged;
   final VoidCallback? onCopy;
 
   @override
@@ -272,13 +276,12 @@ class _ToolBar extends StatelessWidget {
           ),
           OmarchyInputContainer(
             key: Key('error_correct_level_input'),
-            builder: (context, focusNode) => OmarchySelect<int>(
+            builder: (context, focusNode) => OmarchySelect<QrErrorCorrectLevel>(
               direction: popOverDirection,
-              options: QrErrorCorrectLevel.levels,
+              options: QrErrorCorrectLevel.values,
               value: Some(errorCorrectLevel),
               onChanged: onErrorCorrectLevelChanged,
-              builder: (context, value) =>
-                  Text(QrErrorCorrectLevel.getName(value)),
+              builder: (context, value) => Text(value.name),
             ),
           ),
         ];

@@ -212,7 +212,7 @@ class Colors extends StatelessWidget {
                       TextSpan(text: ' '),
                       TextSpan(
                         text:
-                            '#${color.value.toRadixString(16).padLeft(6, '0')}',
+                            '#${color.toARGB32().toRadixString(16).padLeft(6, '0')}',
                         style: TextStyle(color: colors.bright.black),
                       ),
                     ],

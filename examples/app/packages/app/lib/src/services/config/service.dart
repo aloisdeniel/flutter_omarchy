@@ -26,11 +26,13 @@ abstract class ConfigService {
 }
 
 class LinuxConfigService extends ConfigService {
+  @override
   Future<void> save(String yaml) async {
     final file = _defaultFile;
     await file.writeAsString(yaml);
   }
 
+  @override
   Future<Config> load() async {
     final file = _defaultFile;
 
@@ -48,6 +50,7 @@ class LinuxConfigService extends ConfigService {
     }
   }
 
+  @override
   Stream<Config> watch() async* {
     final file = _defaultFile;
     await for (final event in file.watch()) {
@@ -68,7 +71,7 @@ class LinuxConfigService extends ConfigService {
   }
 
   /// Returns the default configuration file path.
-  static late File _defaultFile = () {
+  static final File _defaultFile = () {
     final home =
         Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'];
     return File(
@@ -82,15 +85,18 @@ class DemoConfigService extends ConfigService {
 
   Config _config = Config(demo: true);
 
+  @override
   Future<void> save(String yaml) {
     _config = Config.fromYaml(yaml);
     return Future.value();
   }
 
+  @override
   Future<Config> load() {
     return Future.value(_config);
   }
 
+  @override
   Stream<Config> watch() {
     return Stream.empty();
   }
@@ -99,11 +105,13 @@ class DemoConfigService extends ConfigService {
 class LocalConfigService extends ConfigService {
   const LocalConfigService();
 
+  @override
   Future<void> save(String yaml) async {
     final file = await _defaultFile;
     await file.writeAsString(yaml);
   }
 
+  @override
   Future<Config> load() async {
     final file = await _defaultFile;
 
@@ -121,6 +129,7 @@ class LocalConfigService extends ConfigService {
     }
   }
 
+  @override
   Stream<Config> watch() async* {
     final file = await _defaultFile;
     await for (final event in file.watch()) {
@@ -141,7 +150,7 @@ class LocalConfigService extends ConfigService {
   }
 
   /// Returns the default configuration file path.
-  static late Future<File> _defaultFile = () async {
+  static final Future<File> _defaultFile = () async {
     final doc = await getApplicationDocumentsDirectory();
     return File('${doc.path}/config.yaml');
   }();

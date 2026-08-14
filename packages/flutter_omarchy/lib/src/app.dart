@@ -31,7 +31,7 @@ class OmarchyApp extends StatelessWidget {
 
   Iterable<LocalizationsDelegate<dynamic>> get _localizationsDelegates {
     return <LocalizationsDelegate<dynamic>>[
-      if (localizationsDelegates != null) ...localizationsDelegates!,
+      ...?localizationsDelegates,
       DefaultMaterialLocalizations.delegate,
       DefaultCupertinoLocalizations.delegate,
     ];

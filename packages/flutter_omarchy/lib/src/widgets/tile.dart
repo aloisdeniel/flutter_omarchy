@@ -22,7 +22,7 @@ class OmarchyTile extends StatelessWidget {
     var child = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [title, if (description case final description?) description],
+      children: [title, ?description],
     );
     final isSelected = Selected.of(context);
     return SizedBox(

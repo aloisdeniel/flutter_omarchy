@@ -15,7 +15,7 @@ class HomeNotifier extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       // Something went wrong
-      print(e);
+      debugPrint('$e');
     }
   }
 }

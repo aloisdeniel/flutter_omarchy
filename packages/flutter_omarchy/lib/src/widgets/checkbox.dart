@@ -1,8 +1,4 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter_omarchy/flutter_omarchy.dart';
-import 'package:flutter_omarchy/src/theme/colors.dart';
-import 'package:flutter_omarchy/src/theme/theme.dart';
-import 'package:flutter_omarchy/src/widgets/icon_data.g.dart';
 
 enum CheckboxState { checked, unchecked, multiple }
 

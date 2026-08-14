@@ -75,9 +75,9 @@ class OmarchyTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         spacing: 12,
         children: [
-          if (icon case final icon?) icon,
+          ?icon,
           child,
-          if (close case final close?) close,
+          ?close,
         ],
       );
     }
