@@ -724,7 +724,7 @@ class _WidgetsPageState extends State<WidgetsPage> {
                                       icon: Icon(OmarchyIcons.codFilePdf),
                                       title: Text('Subchild 2'),
                                       onTap: () {
-                                        print('Tapped subchild 2');
+                                        debugPrint('Tapped subchild 2');
                                       },
                                     ),
                                     OmarchyTreeNode(

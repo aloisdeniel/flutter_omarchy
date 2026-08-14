@@ -284,8 +284,13 @@ class _OmarchyPopOverAnimationState extends State<OmarchyPopOverAnimation> {
         duration: const Duration(milliseconds: 120),
         transformAlignment: Alignment.center,
         transform: Matrix4.identity()
-          ..translate(0.0, isShowing ? 0.0 : -10.0)
-          ..scale(isShowing ? 1.0 : 0.98),
+          ..translateByDouble(0.0, isShowing ? 0.0 : -10.0, 0.0, 1.0)
+          ..scaleByDouble(
+            isShowing ? 1.0 : 0.98,
+            isShowing ? 1.0 : 0.98,
+            isShowing ? 1.0 : 0.98,
+            1.0,
+          ),
         curve: Curves.easeInOut,
         onEnd: () {
           if (isShowing == false) {
